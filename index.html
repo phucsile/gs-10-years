@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gene Solutions — 10 Years of Impact">
+  <title>Gene Solutions — 10 Years of Impact</title>
+
+  <!--
+    GENE SOLUTIONS — 10 YEARS OF IMPACT / V2 (Light iOS Liquid Glass Edition - Updated)
+    Standalone HTML — không dùng thư viện ngoài.
+  -->
+
+  <style>
+    /* ---------------- FONT IMPORT (AlmarenaVN Display) ---------------- */
+    @font-face {
+      font-family: 'AlmarenaVN Display';
+      src: local('AlmarenaVN Display'), local('AlmarenaVNDisplay'),
+           url('https://fonts.cdnfonts.com/s/93129/AlmarenaDisplay-Bold.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root{
+      --cyan:#00A8C6;
+      --cyan-bright:#00E5FF;
+      --cyan-soft:#E6F9FC;
+      --gold:#C29B38;
+      --gold-soft:#F9F4E8;
+      --white:#ffffff;
+      --paper:#F4F7FA;
+      --ink:#0F172A;
+      --navy-text:#0B192C;
+      --muted:#64748B;
+      --line:#E2E8F0;
+      
+      /* Light Glass Tokens */
+      --liquid-glass: rgba(255, 255, 255, 0.65);
+      --liquid-glass-hover: rgba(255, 255, 255, 0.85);
+      --liquid-border: rgba(255, 255, 255, 0.8);
+      --liquid-border-cyan: rgba(0, 168, 198, 0.4);
+      --liquid-blur: blur(24px) saturate(180%);
+      --liquid-shadow: 0 20px 40px rgba(15, 23, 42, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      --radius:24px;
+      --max:1500px;
+    }
+
+    *{box-sizing:border-box}
+    
+    html{
+      scroll-behavior:smooth;
+      background: var(--paper);
+    }
+    body{
+      margin:0;
+      color:var(--ink);
+      background:var(--paper);
+      /* Yêu cầu 4: Đổi toàn bộ font sang AlmarenaVN Display */
+      font-family: 'AlmarenaVN Display', 'AlmarenaVN', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      /* Fail-safe: nội dung luôn hiển thị ngay cả khi JS/font/video bên ngoài tải lỗi. */
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-x: hidden;
+    }
+    body.is-loaded {
+      opacity: 1;
+      transform: none;
+    }
+
+    a{text-decoration:none;color:inherit}
+    button, input, textarea, select{font:inherit}
+    .container{width:min(var(--max),calc(100% - 56px));margin:auto}
+    .display{font-family:'AlmarenaVN Display', sans-serif;letter-spacing:-.04em}
+    .kicker{
+      font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+      font-weight:800;color:var(--cyan)
+    }
+    .section-title{
+      margin:10px 0 42px;
+      font-size:clamp(36px,4vw,60px);
+      line-height:.98;
+      letter-spacing:-.04em;
+      color: var(--navy-text);
+    }
+    .gold{color:var(--gold)}
+
+    /* ---------------- LIQUID GLASSMORPHISM LIGHT ---------------- */
+    .glass-effect {
+      background: var(--liquid-glass) !important;
+      backdrop-filter: var(--liquid-blur) !important;
+      -webkit-backdrop-filter: var(--liquid-blur) !important;
+      border: 1px solid var(--liquid-border) !important;
+      box-shadow: var(--liquid-shadow) !important;
+    }
+
+    .haptic-btn, .navcta, .social-btn, .cta-btn, .btn-outline, .metric, .story-card, .news-card, .tile, .milestone-card, .play {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      cursor: pointer;
+    }
+    .haptic-btn:active, .navcta:active, .social-btn:active, .cta-btn:active, .btn-outline:active, .play:active {
+      transform: scale(0.94) !important;
+    }
+
+    /* ---------------- NAV / HERO LIGHT ---------------- */
+    /* Yêu cầu 3: Section hero banner full màn hình 100vh */
+    .hero{
+      min-height:100vh;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+      color:var(--ink);
+      background: linear-gradient(135deg, #E6F4F8 0%, #F4F7FA 50%, #EBF3F9 100%);
+    }
+    
+    .hero-video-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+      filter: brightness(1.05) contrast(0.95);
+      opacity: 0.6;
+    }
+    
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, rgba(244, 247, 250, 0.75) 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(244, 247, 250, 0.4) 50%, #F4F7FA 100%);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .hero-watermark{
+      position:absolute;left:-8%;bottom:-12%;
+      width:54%;height:45%;
+      background:radial-gradient(ellipse at center,rgba(0, 168, 198, 0.15),transparent 67%);
+      filter:blur(40px);transform:rotate(-12deg);
+      z-index:-1;
+    }
+
+    /* HERO CLOUDS — CSS only / no external image or API dependency */
+    .hero-clouds{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:-1;
+      contain:paint;
+    }
+    .hero-cloud{
+      position:absolute;
+      width:clamp(220px,28vw,460px);
+      height:clamp(70px,9vw,150px);
+      border-radius:999px;
+      background:rgba(255,255,255,.42);
+      filter:blur(10px);
+      opacity:.42;
+      will-change:transform;
+      transform:translate3d(-30vw,0,0);
+    }
+    .hero-cloud::before,
+    .hero-cloud::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      background:inherit;
+    }
+    .hero-cloud::before{width:48%;height:145%;left:15%;top:-55%}
+    .hero-cloud::after{width:38%;height:125%;right:15%;top:-35%}
+    .hero-cloud.c1{top:16%;animation:cloudDrift 34s linear infinite}
+    .hero-cloud.c2{top:33%;width:clamp(180px,22vw,360px);opacity:.28;animation:cloudDrift 46s linear infinite 7s}
+    .hero-cloud.c3{top:54%;width:clamp(260px,34vw,520px);opacity:.22;animation:cloudDrift 55s linear infinite 14s}
+    @keyframes cloudDrift{
+      from{transform:translate3d(-35vw,0,0)}
+      to{transform:translate3d(125vw,0,0)}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .hero-cloud{animation:none!important;opacity:.18}
+    }
+    nav{
+      height:82px;display:flex;align-items:center;justify-content:space-between;
+      position:relative;z-index:5
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;font-weight:900;
+      line-height:.85;font-size:17px;letter-spacing:-.04em;
+      color: var(--navy-text);
+      transition: transform 0.3s ease;
+    }
+    .brand:hover{ transform: scale(1.03); }
+    .brand-mark{
+      width:34px;height:34px;border-radius:10px;
+      border:2px solid var(--cyan);display:grid;place-items:center;
+      color:var(--cyan);font-weight:900;font-size:17px;
+      background: #fff;
+      box-shadow:0 4px 15px rgba(0, 168, 198, 0.15)
+    }
+    .navlinks{
+      display:flex;gap:27px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+      padding: 10px 22px; border-radius: 99px;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      color: var(--navy-text);
+    }
+    .navlinks a{opacity:.75; transition: color 0.3s ease, opacity 0.3s ease;}
+    .navlinks a:hover{color:var(--cyan);opacity:1}
+    .navcta{
+      padding:12px 17px;border-radius:10px;
+      border:1px solid var(--cyan);
+      color:#fff;background:var(--cyan);
+      backdrop-filter: blur(12px);
+      box-shadow:0 6px 20px rgba(0, 168, 198, 0.25);
+      font-weight: 800;
+      font-size: 11px;
+    }
+    .navcta:hover {
+      background:#008EA3;
+      box-shadow:0 8px 25px rgba(0, 168, 198, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .hero-content{
+      text-align:center;position:relative;z-index:3;
+      margin: auto 0;
+      padding: 20px 0;
+    }
+    .hero-eyebrow{
+      color:var(--cyan);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:800
+    }
+    h1{
+      margin:18px auto 12px;
+      max-width:1100px;
+      font-size:clamp(46px,6.5vw,90px);
+      line-height:.91;
+      font-weight:850;
+      color: var(--navy-text);
+    }
+    h1 .gold-word{
+      color:var(--gold);
+    }
+    .hero-sub{font-size:18px;color:var(--muted);}
+    .countdown{
+      max-width:620px;margin:28px auto 0;
+      display:flex;align-items:stretch;
+      padding:16px 10px;
+      border:1px solid rgba(255, 255, 255, 0.9);
+      border-radius:20px;
+      background:rgba(255, 255, 255, 0.75);
+      backdrop-filter:var(--liquid-blur);
+      -webkit-backdrop-filter:var(--liquid-blur);
+      box-shadow:0 15px 35px rgba(0,0,0,0.04);
+      transition: transform 0.4s ease, border-color 0.4s ease;
+    }
+    .countdown:hover {
+      border-color: var(--liquid-border-cyan);
+      transform: translateY(-3px);
+    }
+    .count{flex:1;border-right:1px solid var(--line)}
+    .count:last-child{border:0}
+    .count b{display:block;font-size:32px;color:var(--cyan);font-variant-numeric:tabular-nums;}
+    .count span{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight: 700;}
+    .scroll-cue{margin-bottom:30px; text-align:center; font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight: 700;}
+
+    /* ---------------- FOUNDER ---------------- */
+    section{padding:100px 0}
+    .founder{background:#fff;position:relative;overflow:hidden}
+    .founder::before{
+      content:"";position:absolute;left:-120px;top:40px;width:520px;height:520px;
+      background:radial-gradient(circle,rgba(0, 168, 198, 0.08),transparent 66%);filter:blur(25px)
+    }
+    .founder-grid{
+      display:grid;grid-template-columns:420px 1fr;gap:85px;align-items:center
+    }
+    .founder-portrait{
+      min-height:500px;border-radius:30px;position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 50% 30%,#EBF8FA 0 8%,transparent 9%),
+        linear-gradient(145deg,#E0F2F5,#BEE3EB 38%,#85CBD8 80%,#00A8C6);
+      box-shadow:var(--shadow);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .founder-portrait:hover { transform: scale(1.02) rotate(-0.5deg); }
+    .founder-portrait::before{
+      content:"[THAY ẢNH FOUNDER / CEO]";
+      position:absolute;inset:0;display:grid;place-items:center;
+      color:var(--navy-text);font-size:13px;letter-spacing:.12em;text-align:center;font-weight: 700;
+    }
+    .founder-portrait .years{
+      position:absolute;right:24px;bottom:20px;font-size:80px;line-height:.8;font-weight:900;color:rgba(255,255,255,0.4)
+    }
+    .founder-copy{max-width:800px}
+    .founder-copy h2{font-size:clamp(36px,4vw,56px);line-height:1;letter-spacing:-.04em;margin:12px 0 25px;color:var(--navy-text)}
+    .founder-copy blockquote{
+      margin:0;color:#334155;font-size:19px;line-height:1.72;max-width:750px
+    }
+    .signature{
+      margin-top:30px;display:flex;align-items:flex-end;gap:18px
+    }
+    .signature-script{font-family:cursive;font-size:34px;color:var(--navy-text)}
+    .signature-meta{font-size:12px;color:var(--muted);line-height:1.5}
+
+    /* ---------------- METRICS ---------------- */
+    .metrics{background:var(--paper)}
+    .metric-heading{display:flex;align-items:end;justify-content:space-between;gap:30px}
+    .metric-note{font-size:11px;color:var(--muted);max-width:280px}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .metric{
+      min-height:170px;padding:28px;border-radius:20px;
+      background:#fff;
+      border:1px solid var(--line);
+      box-shadow:0 10px 30px rgba(0,0,0,0.03);
+    }
+    .metric:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--cyan);
+      box-shadow: 0 20px 40px rgba(0, 168, 198, 0.12);
+    }
+    .metric-icon{
+      width:42px;height:42px;border-radius:50%;
+      display:grid;place-items:center;border:1px solid #CBE8EE;color:var(--cyan);margin-bottom:17px;
+      background: var(--cyan-soft);
+      transition: background 0.3s ease, color 0.3s ease;
+      font-weight: 800;
+    }
+    .metric:hover .metric-icon { background: var(--cyan); color: #fff; }
+    .metric b{display:block;font-size:42px;line-height:1;letter-spacing:-.04em;color:var(--navy-text)}
+    .metric p{margin:8px 0 2px;font-weight:850;color:var(--ink)}.metric small{color:var(--muted);font-size:11px}
+
+    /* ---------------- TIMELINE (Cập nhật Yêu cầu 1) ---------------- */
+    .timeline-section{background:#fff}
+    .timeline-wrap{position:relative}
+    .timeline-wrap::before{
+      content:"";position:absolute;left:20px;right:20px;top:37px;height:2px;background:var(--line)
+    }
+    .timeline{
+      display:flex;gap:18px;overflow-x:auto;padding:0 0 28px;
+      scrollbar-width:none;
+      scroll-snap-type:x proximity;
+      cursor: grab;
+    }
+    .timeline:active { cursor: grabbing; }
+    .milestone{
+      min-width:300px;scroll-snap-align:start;
+      position:relative;padding-top:62px
+    }
+    .timeline-item{cursor:pointer;outline:none}
+    .timeline-item:focus-visible .milestone-card{outline:3px solid rgba(0,168,198,.45);outline-offset:3px}
+    .milestone::before{
+      content:"";position:absolute;top:31px;left:18px;width:11px;height:11px;border-radius:50%;
+      background:var(--cyan);border:3px solid #fff;box-shadow:0 0 0 1px var(--cyan),0 0 12px rgba(0,168,198,.3);z-index:2;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .milestone:hover::before { transform: scale(1.4); background: var(--cyan); }
+    .milestone-card{
+      overflow:hidden;border:1px solid var(--line);border-radius:19px;background:var(--paper);
+      box-shadow:0 10px 30px rgba(0,0,0,0.03);
+      height: 100%; display: flex; flex-direction: column;
+    }
+    .milestone-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border-color: var(--cyan);
+    }
+    /* Yêu cầu 1: Điều chỉnh lại size các shape cho tỷ lệ bằng nhau */
+    .media-placeholder{
+      height:170px; width:100%; display:grid;place-items:center;text-align:center;
+      padding:20px;color:var(--navy-text);font-size:12px;font-weight:850;letter-spacing:.06em;
+      background: linear-gradient(135deg, #E0F2F5 0%, #C4E9F0 100%);
+      object-fit: cover;
+    }
+    .milestone-body{padding:19px; flex:1; display:flex; flex-direction:column; justify-content:space-between;}
+    .year{font-size:11px;font-weight:900;color:var(--cyan)}
+    .milestone h3{font-size:19px;margin:7px 0;color:var(--navy-text)}
+    .milestone p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+
+    /* Modal Popup Timeline Details */
+    .timeline-modal{
+      position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important;
+      background:rgba(15,23,42,0.6);
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      z-index:1000; display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+      padding:20px;
+    }
+    .timeline-modal.active{ opacity:1 !important; visibility:visible !important; pointer-events:all !important; }
+    .timeline-modal:not(.active){ visibility:hidden; }
+    .timeline-modal-content{
+      background:#fff; border-radius:24px; max-width:550px; width:100%;
+      padding:32px; position:relative; box-shadow:0 25px 50px rgba(0,0,0,0.15);
+      transform:scale(0.9); transition:transform 0.3s ease;
+      border: 1px solid var(--liquid-border);
+    }
+    .timeline-modal.active .timeline-modal-content{ transform:scale(1); }
+    body.modal-open{overflow:hidden;}
+    .timeline-modal-close{
+      position:absolute; top:20px; right:20px; width:32px; height:32px;
+      border-radius:50%; background:var(--paper); border:none; cursor:pointer;
+      display:grid; place-items:center; font-weight:800; color:var(--navy-text);
+    }
+    .timeline-modal-close:hover{ background:var(--line); }
+
+    /* ---------------- STORIES LIGHT ---------------- */
+    .stories{background:var(--paper);color:var(--ink)}
+    .stories .kicker{color:var(--cyan)}
+    .stories .section-title{color:var(--navy-text)}
+    .story-layout{display:grid;grid-template-columns:1fr 1.18fr;gap:18px}
+    .hcp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .story-card{
+      min-height:405px;border:1px solid var(--line);border-radius:20px;
+      overflow:hidden;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      position:relative
+    }
+    .story-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 20px 40px rgba(0,168,198,0.1);
+    }
+    .doctor-media{
+      height:245px;display:grid;place-items:center;
+      background:linear-gradient(145deg, #EBF8FA, #C5E9F0);
+    }
+    .doctor-media::after{content:"[THAY ẢNH BÁC SĨ]";font-size:10px;letter-spacing:.1em;color:var(--navy-text);font-weight:700}
+    .play{
+      position:absolute;left:17px;top:202px;width:50px;height:50px;border-radius:50%;
+      display:grid;place-items:center;border:1px solid rgba(0,168,198,0.2);
+      background:#fff;color:var(--cyan);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .play:hover { transform: scale(1.15) !important; background: var(--cyan); color:#fff; }
+    .story-body{padding:18px}.badge{font-size:9px;padding:5px 8px;border:1px solid var(--cyan);border-radius:999px;color:var(--cyan);letter-spacing:.06em;font-weight:800}.story-body h3{font-size:17px;margin:13px 0 5px;color:var(--navy-text)}.story-body p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+    .leadership{
+      min-height:405px;border-radius:20px;padding:40px;position:relative;overflow:hidden;
+      display:flex;align-items:end;
+      background: linear-gradient(135deg, #FFFFFF 0%, #E6F4F8 100%);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+    .leadership::after{
+      content:"10";position:absolute;right:-5px;top:8px;font-size:300px;line-height:1;font-weight:900;color:rgba(0,168,198,.05)
+    }
+    .leadership-content{position:relative;z-index:2;max-width:640px}.leadership h3{font-size:37px;line-height:1;margin:12px 0 15px;letter-spacing:-.04em;color:var(--navy-text)}.leadership p{color:var(--muted);line-height:1.65;font-size:14px}
+    .btn-outline{display:inline-block;padding:12px 18px;border:1px solid var(--cyan);border-radius:9px;color:var(--cyan);font-size:12px;font-weight:800;background:#fff;}
+    .btn-outline:hover { background: var(--cyan); color:#fff; transform: translateY(-2px); }
+
+    /* ---------------- BENTO (Cập nhật Yêu cầu 2: Sắp xếp lại bố cục People & Impact) ---------------- */
+    .arena{background:#fff}
+    /* Chuyển bento sang dạng grid 3 cột x 2 hàng đồng đều = 6 ô cân bằng */
+    .bento{display:grid;grid-template-columns:repeat(3, 1fr);grid-auto-rows:240px;gap:18px}
+    .tile{
+      border-radius:21px;overflow:hidden;position:relative;padding:25px;
+      display:flex;align-items:flex-end;color:var(--navy-text);
+      background: linear-gradient(135deg, #EBF8FA 0%, #D2F0F5 100%);
+      border: 1px solid var(--line);
+      height: 100%;
+    }
+    .tile:hover {
+      transform: translateY(-6px) scale(1.015);
+      box-shadow: 0 20px 40px rgba(0, 168, 198, 0.12);
+      border-color: var(--cyan);
+    }
+    .tile::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(255,255,255,0.7))}
+    .tile-content{position:relative;z-index:1}.tile h3{font-size:20px;margin:0 0 5px;color:var(--navy-text)}.tile p{margin:0;color:var(--muted);font-size:11px;font-weight:700}
+
+    /* ---------------- NEWS ---------------- */
+    .news{background:var(--paper)}
+    .news-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:17px}
+    .news-card{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.03)}
+    .news-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border-color: var(--cyan);
+    }
+    .news-card.featured{grid-row:span 2}
+    .news-image{height:200px;background:linear-gradient(135deg, #E0F2F5 0%, #BEE3EB 100%);display:grid;place-items:center;color:var(--navy-text);font-size:11px;font-weight:800}.featured .news-image{height:315px}
+    .news-body{padding:20px}.news-meta{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);font-weight:900}.news-body h3{margin:8px 0;font-size:20px;line-height:1.1;color:var(--navy-text)}.news-body p{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 13px}.readmore{font-size:11px;font-weight:850;color:var(--cyan)}
+
+    /* ---------------- SHARE / FRAME LIGHT (Cập nhật Yêu cầu 5) ---------------- */
+    .share{background:#fff}
+    .share-card{
+      border-radius:28px;overflow:hidden;
+      background: linear-gradient(135deg, #F4F7FA 0%, #E6F4F8 100%);
+      color:var(--ink);padding:42px;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start;
+      box-shadow:var(--shadow);
+      border: 1px solid var(--line);
+    }
+    .share-card h2{font-size:clamp(32px,3.5vw,52px);line-height:.98;margin:10px 0 16px;letter-spacing:-.04em;color:var(--navy-text)}
+    .share-card p{color:var(--muted);max-width:650px;line-height:1.65;font-size:14px}
+    
+    .share-form{ display:flex; flex-direction:column; gap:14px; margin-top:20px; }
+    .form-group{ display:flex; flex-direction:column; gap:6px; }
+    .form-group label{ font-size:11px; font-weight:800; color:var(--navy-text); text-transform:uppercase; letter-spacing:.05em; }
+    .form-control{
+      padding:12px 16px; border-radius:10px; border:1px solid var(--line);
+      background:#fff; color:var(--ink); outline:none; transition:border-color 0.3s;
+    }
+    .form-control:focus{ border-color:var(--cyan); }
+    textarea.form-control{ resize:vertical; min-height:80px; }
+
+    .frame-selector{ display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; scrollbar-width:thin; }
+    .frame-option{
+      min-width:50px; height:50px; border-radius:8px; border:2px solid var(--line);
+      cursor:pointer; display:grid; place-items:center; font-size:10px; font-weight:800;
+      background:#fff; flex-shrink:0; transition:all 0.2s;
+    }
+    .frame-option.active{ border-color:var(--cyan); background:var(--cyan-soft); color:var(--cyan); }
+
+    .share-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+    .share-socials{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+    }
+    .share-socials .social-btn{
+      background:#fff;color:var(--navy-text);border-color:var(--line);
+      box-shadow:none;
+    }
+    .share-socials .social-btn:hover{
+      color:#fff;background:var(--cyan);border-color:var(--cyan);
+    }
+    .share-status{
+      min-height:18px;margin-top:8px;font-size:11px;color:var(--muted);
+    }
+    .music-toggle{
+      position:fixed;right:18px;bottom:18px;z-index:900;
+      width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.85);
+      background:rgba(255,255,255,.78);color:var(--cyan);
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      box-shadow:0 8px 25px rgba(15,23,42,.12);
+      cursor:pointer;font-size:16px;
+    }
+    .music-toggle.is-playing{box-shadow:0 0 0 5px rgba(0,168,198,.10),0 8px 25px rgba(15,23,42,.12)}
+    .social-btn{
+      padding:12px 20px;border:1px solid var(--cyan);border-radius:10px;color:#fff;background:var(--cyan);font-size:12px;font-weight:800;
+      box-shadow: 0 4px 12px rgba(0, 168, 198, 0.2);
+    }
+    .social-btn:hover {
+      background: #008EA3;
+      transform: translateY(-2px);
+    }
+
+    .frame-preview-container{
+      display:flex; flex-direction:column; align-items:center; gap:12px;
+    }
+    .frame-preview{
+      width:100%; aspect-ratio:1/1; border-radius:20px; border:2px dashed var(--cyan);
+      position:relative; overflow:hidden; background: #fff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    canvas#shareCanvas{ width:100%; height:100%; display:block; object-fit:contain; }
+
+    /* ---------------- CTA LIGHT ---------------- */
+    .cta{
+      padding:70px 0;
+      color:var(--navy-text);position:relative;overflow:hidden;
+      background: linear-gradient(135deg, #E6F4F8 0%, #D2F0F5 100%);
+      border-top: 1px solid var(--line);
+    }
+    .cta-inner{display:flex;align-items:center;justify-content:space-between;gap:30px}.cta h2{font-size:clamp(30px,3.5vw,50px);line-height:1;letter-spacing:-.04em;margin:8px 0;color:var(--navy-text)}.cta p{color:var(--muted);margin:0}
+    .cta-btn{
+      background:var(--cyan);color:#fff;padding:15px 23px;border-radius:999px;font-weight:900;font-size:12px;white-space:nowrap;
+      box-shadow:0 8px 25px rgba(0,168,198,.3);
+      transition: all 0.3s ease;
+    }
+    .cta-btn:hover {
+      background: #008EA3;
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(0,168,198,.4);
+      transform: translateY(-3px);
+    }
+
+    /* ---------------- FOOTER LIGHT ---------------- */
+    footer{background:#fff;color:var(--muted);padding:58px 0 22px;border-top:1px solid var(--line)}
+    .footer-grid{display:grid;grid-template-columns:1.3fr repeat(3,1fr) 1.2fr;gap:32px}
+    .footer-title{color:var(--navy-text);font-weight:850;font-size:12px;margin-bottom:14px}.footer-grid p,.footer-grid a{font-size:12px;line-height:1.7}.footer-grid a:hover{color:var(--cyan)}
+    .footer-brand p{max-width:250px}.copyright{border-top:1px solid var(--line);margin-top:42px;padding-top:18px;display:flex;justify-content:space-between;gap:20px;font-size:10px;color:var(--muted)}
+
+    /* ---------------- MOTION / RESPONSIVE ---------------- */
+    [data-reveal]{opacity:1;transform:none}
+    @media (prefers-reduced-motion:no-preference){
+      [data-reveal]{
+        opacity:0;
+        transform:translateY(24px) scale(0.97);
+        transition:opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      [data-reveal].is-visible{opacity:1;transform:none}
+    }
+
+    @media(max-width:1100px){
+      .navlinks{display:none}
+      .founder-grid{grid-template-columns:330px 1fr;gap:45px}
+      .metric-grid{grid-template-columns:repeat(2,1fr)}
+      .story-layout{grid-template-columns:1fr}
+      .news-grid{grid-template-columns:1fr 1fr}
+      .news-card.featured{grid-column:span 2;grid-row:auto}
+      .featured .news-image{height:250px}
+      .share-card{grid-template-columns:1fr}
+      .bento{grid-template-columns:repeat(2, 1fr)}
+      .footer-grid{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media(max-width:720px){
+      .container{width:min(100% - 30px,600px)}
+      section{padding:72px 0}
+      .hero{min-height:100vh;}
+      nav{height:70px}.navcta{font-size:9px;padding:10px 12px}
+      .hero-content{padding:40px 0 30px}
+      h1{font-size:46px}
+      .hero-sub{font-size:15px}
+      .countdown{margin-top:20px;padding:12px 5px}.count b{font-size:22px}
+      .founder-grid{grid-template-columns:1fr;gap:32px}
+      .founder-portrait{min-height:420px}
+      .metric-heading{display:block}.metric-note{margin-top:-25px;margin-bottom:28px}
+      .metric-grid{grid-template-columns:1fr}
+      .story-layout{display:block}.hcp-grid{grid-template-columns:1fr}
+      .leadership{margin-top:16px;padding:30px;min-height:380px}
+      .bento{grid-template-columns:1fr; grid-auto-rows:200px;}
+      .news-grid{grid-template-columns:1fr}.news-card.featured{grid-column:auto}.featured .news-image{height:220px}
+      .share-card{display:block;padding:30px}
+      .cta-inner{display:block}.cta-btn{display:inline-block;margin-top:22px}
+      .footer-grid{grid-template-columns:1fr 1fr}.copyright{display:block}.copyright span{display:block;margin-top:8px}
+    }
+
+    @media(max-width:420px){
+      h1{font-size:38px}.footer-grid{grid-template-columns:1fr}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================== HERO (Yêu cầu 3: Full экран 100vh) ============================== -->
+  <header class="hero" id="home">
+    <video class="hero-video-bg" autoplay loop muted playsinline poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB2aWV3Qm94PSIwIDAgMSAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4=">
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-glowing-dna-strand-revolving-31524-large.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-watermark" aria-hidden="true"></div>
+    <div class="hero-clouds" aria-hidden="true">
+      <span class="hero-cloud c1"></span>
+      <span class="hero-cloud c2"></span>
+      <span class="hero-cloud c3"></span>
+    </div>
+
+    <div class="container" style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+      <nav>
+        <a href="#home" class="brand haptic-btn" aria-label="Gene Solutions">
+          <span class="brand-mark">S</span>
+          <span>GENE<br>SOLUTIONS</span>
+        </a>
+
+        <div class="navlinks">
+          <a href="#founder">Founder</a>
+          <a href="#impact">Impact</a>
+          <a href="#timeline">Timeline</a>
+          <a href="#stories">Stories</a>
+          <a href="#champions">Champions</a>
+          <a href="#news">Newsroom</a>
+          <a href="#share">Join Us</a>
+        </div>
+
+        <a href="#cta" class="navcta haptic-btn">JOIN THE CELEBRATION</a>
+      </nav>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">[THAY NGÀY SỰ KIỆN] • A DECADE OF IMPACT</div>
+        <h1 class="display">Gene Solutions — <span class="gold-word">10 Years</span> of Impact</h1>
+        <div class="hero-sub">10 năm giải mã gen — Kiến tạo giá trị — Vì sức khỏe cộng đồng</div>
+
+        <div class="countdown" aria-label="Countdown">
+          <div class="count"><b id="days">--</b><span>Ngày</span></div>
+          <div class="count"><b id="hours">--</b><span>Giờ</span></div>
+          <div class="count"><b id="mins">--</b><span>Phút</span></div>
+          <div class="count"><b id="secs">--</b><span>Giây</span></div>
+        </div>
+      </div>
+
+      <div class="scroll-cue">↓ &nbsp; Scroll to explore</div>
+    </div>
+  </header>
+
+  <!-- Online piano samples. Browser autoplay policy may require one user gesture. -->
+  <audio id="bgMusic" preload="auto" playsinline aria-label="Nhạc piano nền"></audio>
+  <button id="musicToggle" class="music-toggle" type="button" aria-label="Bật/tắt nhạc nền" title="Bật/tắt nhạc nền">♪</button>
+
+  <main>
+
+    <!-- ============================== FOUNDER ============================== -->
+    <section class="founder" id="founder">
+      <div class="container">
+        <div class="founder-grid" data-reveal>
+          <div class="founder-portrait" aria-label="Ảnh Founder/CEO placeholder">
+            <div class="years">10</div>
+          </div>
+
+          <div class="founder-copy">
+            <div class="kicker">01 / Thư ngỏ Founder & CEO</div>
+            <h2 class="display">Một thập kỷ của niềm tin, đổi mới và những giá trị để lại.</h2>
+            <blockquote>
+              “[THAY THÔNG ĐIỆP CÁ NHÂN CỦA FOUNDER/CEO NHÂN DỊP 10 NĂM. 
+              Nên giữ khoảng 120–180 từ, tập trung vào hành trình, niềm tin với y khoa,
+              tác động tới cộng đồng và lời cảm ơn đội ngũ/đối tác.]”
+            </blockquote>
+
+            <div class="signature">
+              <div class="signature-script">[Chữ ký]</div>
+              <div class="signature-meta">
+                <strong>[THAY TÊN FOUNDER / CEO]</strong><br>
+                Founder & CEO, Gene Solutions
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== IMPACT ============================== -->
+    <section class="metrics" id="impact">
+      <div class="container">
+        <div class="metric-heading" data-reveal>
+          <div>
+            <div class="kicker">02 / Impact</div>
+            <h2 class="section-title">10 năm — những con số tạo nên tác động</h2>
+          </div>
+          <div class="metric-note">* Số liệu cần được cập nhật theo dữ liệu chính thức tại thời điểm công bố.</div>
+        </div>
+
+        <div class="metric-grid" data-reveal>
+          <article class="metric haptic-btn">
+            <div class="metric-icon">10</div>
+            <b data-count="10">0</b>
+            <p>Năm hoạt động</p><small>Kiến tạo & phát triển</small>
+          </article>
+
+          <article class="metric haptic-btn">
+            <div class="metric-icon">DNA</div>
+            <b data-count="2500000" data-plus="true">0</b>
+            <p>Xét nghiệm gen</p><small>[THAY SỐ LIỆU THỰC TẾ]</small>
+          </article>
+
+          <article class="metric haptic-btn">
+            <div class="metric-icon">+</div>
+            <b data-count="600" data-plus="true">0</b>
+            <p>Đối tác</p><small>Tin cậy & đồng hành</small>
+          </article>
+
+          <article class="metric haptic-btn">
+            <div class="metric-icon">✓</div>
+            <b data-count="99.9" data-decimal="1" data-suffix="%">0</b>
+            <p>Độ chính xác</p><small>[THAY CLAIM ĐƯỢC PHÊ DUYỆT]</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== TIMELINE (Cập nhật Yêu cầu 1) ============================== -->
+    <section class="timeline-section" id="timeline">
+      <div class="container">
+        <div class="kicker">03 / Interactive timeline</div>
+        <h2 class="section-title">Hành trình 10 năm — Dấu ấn tiên phong</h2>
+
+        <div class="timeline-wrap" data-reveal>
+          <div class="timeline" id="timelineContainer" tabindex="0" aria-label="Timeline cuộn ngang">
+            <article class="milestone timeline-item" data-year="[THAY NĂM 2017]" data-title="Khởi nguồn" data-desc="[THAY mô tả chi tiết cột mốc Gene Solutions được thành lập năm 2017 với sứ mệnh ứng dụng công nghệ gen vào chăm sóc sức khỏe người Việt.]" tabindex="0" role="button">
+              <div class="milestone-card haptic-btn">
+                <div class="media-placeholder">[THAY ẢNH CỘT MỐC 01]</div>
+                <div class="milestone-body"><span class="year">[THAY NĂM 2017]</span><h3>Khởi nguồn</h3><p>[THAY mô tả cột mốc Gene Solutions.]</p></div>
+              </div>
+            </article>
+
+            <article class="milestone timeline-item" data-year="[THAY NĂM 2018]" data-title="triSure NIPT" data-desc="[THAY mô tả chi tiết giải pháp triSure NIPT tiên phong trong sàng lọc trước sinh tại Việt Nam.]" tabindex="0" role="button">
+              <div class="milestone-card haptic-btn">
+                <div class="media-placeholder">triSure NIPT<br>[THAY ẢNH]</div>
+                <div class="milestone-body"><span class="year">[THAY NĂM 2018]</span><h3>triSure NIPT</h3><p>[THAY nội dung sản phẩm/cột mốc đã được duyệt.]</p></div>
+              </div>
+            </article>
+
+            <article class="milestone timeline-item" data-year="[THAY NĂM 2020]" data-title="Mở rộng hệ sinh thái" data-desc="[THAY mô tả chi tiết quá trình mở rộng hệ sinh thái xét nghiệm gen chuẩn hóa quốc tế.]" tabindex="0" role="button">
+              <div class="milestone-card haptic-btn">
+                <div class="media-placeholder">[THAY ẢNH HỆ SINH THÁI]</div>
+                <div class="milestone-body"><span class="year">[THAY NĂM 2020]</span><h3>Mở rộng hệ sinh thái</h3><p>[THAY nội dung.]</p></div>
+              </div>
+            </article>
+
+            <article class="milestone timeline-item" data-year="[THAY NĂM 2022]" data-title="SPOT-MAS" data-desc="[THAY mô tả chi tiết công nghệ SPOT-MAS tầm soát sớm nhiều loại ung thư phổ biến qua một lần thu máu.]" tabindex="0" role="button">
+              <div class="milestone-card haptic-btn">
+                <div class="media-placeholder">SPOT-MAS<br>[THAY ẢNH]</div>
+                <div class="milestone-body"><span class="year">[THAY NĂM 2022]</span><h3>SPOT-MAS</h3><p>[THAY cột mốc công nghệ và tác động thực tế.]</p></div>
+              </div>
+            </article>
+
+            <article class="milestone timeline-item" data-year="[THAY NĂM 2024]" data-title="K-TRACK" data-desc="[THAY mô tả chi tiết công nghệ K-TRACK hỗ trợ theo dõi điều trị và giám sát tồn dư tối thiểu của bệnh ung thư.]" tabindex="0" role="button">
+              <div class="milestone-card haptic-btn">
+                <div class="media-placeholder">K-TRACK<br>[THAY ẢNH]</div>
+                <div class="milestone-body"><span class="year">[THAY NĂM 2024]</span><h3>K-TRACK</h3><p>[THAY nội dung sản phẩm/công nghệ.]</p></div>
+              </div>
+            </article>
+
+            <article class="milestone timeline-item" data-year="[THAY NĂM 2027]" data-title="Vươn tầm thế giới" data-desc="[THAY mô tả chi tiết sự phát triển sang các thị trường Đông Nam Á và tầm nhìn quốc tế.]" tabindex="0" role="button">
+              <div class="milestone-card haptic-btn">
+                <div class="media-placeholder">GLOBAL IMPACT<br>[THAY ẢNH]</div>
+                <div class="milestone-body"><span class="year">[THAY NĂM 2027]</span><h3>Vươn tầm thế giới</h3><p>[THAY thị trường, mạng lưới hoặc thành tựu chính thức.]</p></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal cho Interactive Timeline Popup -->
+    <div class="timeline-modal" id="timelineModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="timeline-modal-content">
+        <button class="timeline-modal-close" id="timelineModalClose" type="button" aria-label="Đóng popup">✕</button>
+        <span class="year" id="modalYear" style="font-size:14px;">2024</span>
+        <h3 id="modalTitle" style="font-size:28px; margin:10px 0; color:var(--navy-text);">Khởi nguồn</h3>
+        <p id="modalDesc" style="color:var(--muted); line-height:1.7; font-size:15px;">Mô tả chi tiết tại đây...</p>
+      </div>
+    </div>
+
+    <!-- ============================== STORIES ============================== -->
+    <section class="stories" id="stories">
+      <div class="container">
+        <div class="kicker">04 / Thought leadership & HCP stories</div>
+        <h2 class="section-title">Góc nhìn chuyên gia</h2>
+
+        <div class="story-layout" data-reveal>
+          <div class="hcp-grid">
+            <article class="story-card haptic-btn">
+              <div class="doctor-media"></div><div class="play" aria-label="Play video">▶</div>
+              <div class="story-body"><span class="badge">SẢN PHỤ KHOA</span><h3>TS.BS. [THAY TÊN]</h3><p>“[THAY TRÍCH DẪN ĐƯỢC DUYỆT]”</p></div>
+            </article>
+
+            <article class="story-card haptic-btn">
+              <div class="doctor-media"></div><div class="play" aria-label="Play video">▶</div>
+              <div class="story-body"><span class="badge">ONCOLOGY</span><h3>PGS.TS. [THAY TÊN]</h3><p>“[THAY TRÍCH DẪN ĐƯỢC DUYỆT]”</p></div>
+            </article>
+
+            <article class="story-card haptic-btn">
+              <div class="doctor-media"></div><div class="play" aria-label="Play video">▶</div>
+              <div class="story-body"><span class="badge">NHI KHOA</span><h3>BS.CKII. [THAY TÊN]</h3><p>“[THAY TRÍCH DẪN ĐƯỢC DUYỆT]”</p></div>
+            </article>
+          </div>
+
+          <article class="leadership">
+            <div class="leadership-content">
+              <div class="kicker">Leadership story</div>
+              <h3 class="display">Câu chuyện đội ngũ lãnh đạo</h3>
+              <p>[THAY câu chuyện về đội ngũ lãnh đạo: từ phòng lab, công nghệ, y khoa đến tác động xã hội. Có thể đặt ảnh nhóm lãnh đạo ở lớp background tại đây.]</p>
+              <a href="#champions" class="btn-outline haptic-btn">Khám phá hành trình →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== CHAMPIONS (Cập nhật Yêu cầu 2: Bố cục 6 ô cân bằng) ============================== -->
+    <section class="arena" id="champions">
+      <div class="container">
+        <div class="kicker">05 / People & impact</div>
+        <h2 class="section-title">GS Champion Arena</h2>
+
+        <div class="bento" data-reveal>
+          <article class="tile haptic-btn">
+            <div class="tile-content"><h3>Đồng hành cùng đội ngũ y tế</h3><p>[THAY ẢNH HOẠT ĐỘNG THỰC TẾ]</p></div>
+          </article>
+          <article class="tile haptic-btn">
+            <div class="tile-content"><h3>Đào tạo & nâng cao năng lực</h3><p>[THAY ẢNH]</p></div>
+          </article>
+          <article class="tile haptic-btn">
+            <div class="tile-content"><h3>Công nghệ & đổi mới</h3><p>[THAY ẢNH]</p></div>
+          </article>
+          <article class="tile haptic-btn">
+            <div class="tile-content"><h3>Vì cộng đồng khỏe mạnh</h3><p>[THAY ẢNH CSR / CỘNG ĐỒNG]</p></div>
+          </article>
+          <article class="tile haptic-btn">
+            <div class="tile-content"><h3>Những khoảnh khắc đáng nhớ</h3><p>[THAY ẢNH SỰ KIỆN]</p></div>
+          </article>
+          <article class="tile haptic-btn">
+            <div class="tile-content"><h3>Đồng đội & Văn hóa GS</h3><p>[THAY ẢNH VĂN HÓA DOANH NGHIỆP]</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== NEWS ============================== -->
+    <section class="news" id="news">
+      <div class="container">
+        <div class="kicker">06 / Newsroom</div>
+        <h2 class="section-title">Tin tức & sự kiện 10 năm</h2>
+
+        <div class="news-grid" data-reveal>
+          <article class="news-card featured haptic-btn">
+            <div class="news-image">[THAY ẢNH / VIDEO SỰ KIỆN 10 NĂM]</div>
+            <div class="news-body">
+              <div class="news-meta">Sự kiện • [THAY NGÀY]</div>
+              <h3>[THAY TIÊU ĐỀ BÀI NỔI BẬT VỀ CỘT MỐC 10 NĂM]</h3>
+              <p>[THAY đoạn mô tả ngắn 2–3 dòng, ưu tiên thông tin có tính bằng chứng xã hội.]</p>
+              <a class="readmore" href="#">Xem bài viết →</a>
+            </div>
+          </article>
+
+          <article class="news-card haptic-btn">
+            <div class="news-image">[THAY ẢNH BÁO CHÍ]</div>
+            <div class="news-body"><div class="news-meta">Báo chí • [THAY NGÀY]</div><h3>[THAY TIÊU ĐỀ]</h3><p>[THAY mô tả.]</p><a class="readmore" href="#">Đọc thêm →</a></div>
+          </article>
+
+          <article class="news-card haptic-btn">
+            <div class="news-image">[THAY ẢNH SỰ KIỆN]</div>
+            <div class="news-body"><div class="news-meta">Sự kiện • [THAY NGÀY]</div><h3>[THAY TIÊU ĐỀ]</h3><p>[THAY mô tả.]</p><a class="readmore" href="#">Đọc thêm →</a></div>
+          </article>
+
+          <article class="news-card haptic-btn">
+            <div class="news-image">[THAY ẢNH MEDIA]</div>
+            <div class="news-body"><div class="news-meta">Media • [THAY NGÀY]</div><h3>[THAY TIÊU ĐỀ]</h3><p>[THAY mô tả.]</p><a class="readmore" href="#">Đọc thêm →</a></div>
+          </article>
+
+          <article class="news-card haptic-btn">
+            <div class="news-image">[THAY ẢNH THÀNH TỰU]</div>
+            <div class="news-body"><div class="news-meta">Impact • [THAY NGÀY]</div><h3>[THAY TIÊU ĐỀ]</h3><p>[THAY mô tả.]</p><a class="readmore" href="#">Đọc thêm →</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== SHARE (Cập nhật Yêu cầu 5: Canvas thiệp & Khung 10 năm) ============================== -->
+    <section class="share" id="share">
+      <div class="container">
+        <div class="share-card" data-reveal>
+          <div>
+            <div class="kicker">07 / Share the impact</div>
+            <h2 class="display">Cùng chia sẻ niềm tự hào <span class="gold">10 Years</span></h2>
+            <p>Tạo khung ảnh đại diện & thiệp chúc mừng kỷ niệm 10 năm Gene Solutions để lan tỏa hành trình ý nghĩa.</p>
+
+            <div class="share-form">
+              <div class="form-group">
+                <label for="userName">Họ và tên</label>
+                <input type="text" id="userName" class="form-control" placeholder="Nhập họ và tên của bạn" value="Nguyễn Văn A">
+              </div>
+
+              <div class="form-group">
+                <label for="userWish">Lời chúc dành cho Gene Solutions 10 năm</label>
+                <textarea id="userWish" class="form-control" placeholder="Gửi lời chúc mừng 10 năm phát triển bền vững...">Chúc Gene Solutions luôn tiên phong giải mã gen, kiến tạo thêm nhiều giá trị vì sức khỏe cộng đồng!</textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="userImage">Tải lên hình ảnh của bạn</label>
+                <input type="file" id="userImage" class="form-control" accept="image/*">
+              </div>
+
+              <div class="form-group">
+                <label>Chọn Khung ảnh kỷ niệm (1 trong 10 Frame)</label>
+                <div class="frame-selector" id="frameSelector">
+                  <button type="button" class="frame-option active" data-frame="1">Khung 1</button>
+                  <button type="button" class="frame-option" data-frame="2">Khung 2</button>
+                  <button type="button" class="frame-option" data-frame="3">Khung 3</button>
+                  <button type="button" class="frame-option" data-frame="4">Khung 4</button>
+                  <button type="button" class="frame-option" data-frame="5">Khung 5</button>
+                  <button type="button" class="frame-option" data-frame="6">Khung 6</button>
+                  <button type="button" class="frame-option" data-frame="7">Khung 7</button>
+                  <button type="button" class="frame-option" data-frame="8">Khung 8</button>
+                  <button type="button" class="frame-option" data-frame="9">Khung 9</button>
+                  <button type="button" class="frame-option" data-frame="10">Khung 10</button>
+                </div>
+              </div>
+
+              <div class="share-actions">
+                <button class="social-btn haptic-btn">Tải thiệp & Frame về máy</button>
+              </div>
+
+              <div class="share-socials" aria-label="Chia sẻ kỷ niệm 10 năm">
+                <button type="button" class="social-btn haptic-btn" data-share="facebook">Facebook</button>
+                <button type="button" class="social-btn haptic-btn" data-share="linkedin">LinkedIn</button>
+                <button type="button" class="social-btn haptic-btn" data-share="zalo">Zalo</button>
+                <button type="button" class="social-btn haptic-btn" data-share="copy">Copy message</button>
+              </div>
+              <div id="shareStatus" class="share-status" role="status" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="frame-preview-container">
+            <div class="frame-preview">
+              <canvas id="shareCanvas" width="800" height="800"></canvas>
+            </div>
+            <span style="font-size:11px; color:var(--muted);">Xem trước hình ảnh thiệp/frame thực tế</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== CTA ============================== -->
+    <section class="cta" id="cta">
+      <div class="container">
+        <div class="cta-inner" data-reveal>
+          <div>
+            <div class="kicker">08 / The next chapter</div>
+            <h2 class="display">Cùng chúng tôi viết tiếp hành trình.</h2>
+            <p>[THAY COPY CTA ĐĂNG KÝ / THAM GIA SỰ KIỆN 10 NĂM]</p>
+          </div>
+          <a class="cta-btn haptic-btn" href="#">ĐĂNG KÝ NGAY</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand"><span class="brand-mark">S</span><span>GENE<br>SOLUTIONS</span></div>
+          <p>Ứng dụng công nghệ gen vì sức khỏe và hạnh phúc của người Việt.</p>
+        </div>
+
+        <div>
+          <div class="footer-title">Về chúng tôi</div>
+          <a href="#">Giới thiệu</a><br><a href="#">Tầm nhìn & Sứ mệnh</a><br><a href="#">Đội ngũ lãnh đạo</a><br><a href="#">Trách nhiệm xã hội</a>
+        </div>
+
+        <div>
+          <div class="footer-title">Dịch vụ</div>
+          <a href="#">Sản phẩm & Xét nghiệm</a><br><a href="#">Dành cho HCP</a><br><a href="#">Dành cho khách hàng</a><br><a href="#">Giải pháp đối tác</a>
+        </div>
+
+        <div>
+          <div class="footer-title">Trung tâm hỗ trợ</div>
+          <a href="#">Hướng dẫn khách hàng</a><br><a href="#">Câu hỏi thường gặp</a><br><a href="#">Chính sách bảo mật</a><br><a href="#">Điều khoản sử dụng</a>
+        </div>
+
+        <div>
+          <div class="footer-title">Liên hệ</div>
+          <p>[THAY ĐỊA CHỈ]<br>[THAY SỐ ĐIỆN THOẠI]<br>[THAY EMAIL]</p>
+          <p><a href="#">Zalo OA</a> · <a href="#">Facebook</a> · <a href="#">LinkedIn</a></p>
+        </div>
+      </div>
+
+      <div class="copyright">
+        <span>© 2017–2027 Gene Solutions. All rights reserved.</span>
+        <span>Tuyên bố miễn trừ: Thông tin trên website chỉ mang tính chất tham khảo, không thay thế chẩn đoán hoặc điều trị y khoa.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ===================== PAGE TRANSITION ENTRANCE ===================== */
+    function safeInit() {
+      try { document.body.classList.add('is-loaded'); } catch (e) {}
+      try { initFrameSelector(); } catch (e) { console.warn('Frame selector init:', e); }
+      try { bindShareControls(); } catch (e) { console.warn('Share controls init:', e); }
+      try { bindTimelineControls(); } catch (e) { console.warn('Timeline init:', e); }
+      try { renderCard(); } catch (e) { console.warn('Canvas render:', e); }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', safeInit, {once:true});
+    } else {
+      safeInit();
+    }
+
+    /* ===================== EVENT COUNTDOWN ===================== */
+    const EVENT_DATE = new Date("[THAY NGÀY SỰ KIỆN ISO]");
+
+    function updateCountdown(){
+      const diff = EVENT_DATE - new Date();
+      const ids = ["days","hours","mins","secs"];
+
+      if(!Number.isFinite(diff) || diff <= 0){
+        ids.forEach(id => document.getElementById(id).textContent = "00");
+        return;
+      }
+
+      const values = [
+        Math.floor(diff / 86400000),
+        Math.floor(diff / 3600000) % 24,
+        Math.floor(diff / 60000) % 60,
+        Math.floor(diff / 1000) % 60
+      ];
+
+      values.forEach((v,i)=>{
+        const el = document.getElementById(ids[i]);
+        if(el) el.textContent = String(v).padStart(2,"0");
+      });
+    }
+    updateCountdown();
+    setInterval(updateCountdown,1000);
+
+    /* ===================== COUNT UP ===================== */
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const counters = document.querySelectorAll("[data-count]");
+
+    function renderNumber(value, el){
+      const decimals = Number(el.dataset.decimal || 0);
+      const suffix = el.dataset.suffix || (el.dataset.plus === "true" ? "+" : "");
+      return Number(value).toLocaleString("en-US",{
+        minimumFractionDigits:decimals,
+        maximumFractionDigits:decimals
+      }) + suffix;
+    }
+
+    function runCounter(el){
+      const target = Number(el.dataset.count);
+      if(reduceMotion){
+        el.textContent = renderNumber(target,el);
+        return;
+      }
+
+      const start = performance.now();
+      const duration = 2000;
+
+      function tick(now){
+        const p = Math.min((now-start)/duration,1);
+        const eased = 1 - Math.pow(1 - p, 4);
+        el.textContent = renderNumber(target * eased, el);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if("IntersectionObserver" in window){
+      const counterObserver = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            runCounter(entry.target);
+            counterObserver.unobserve(entry.target);
+          }
+        });
+      },{threshold:.3});
+
+      counters.forEach(el=>counterObserver.observe(el));
+    }else{
+      counters.forEach(runCounter);
+    }
+
+    /* ===================== SCROLL REVEAL ===================== */
+    const reveals = document.querySelectorAll("[data-reveal]");
+    if(!reduceMotion && "IntersectionObserver" in window){
+      const revealObserver = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },{threshold:.1});
+      reveals.forEach(el=>revealObserver.observe(el));
+    }else{
+      reveals.forEach(el=>el.classList.add("is-visible"));
+    }
+
+    /* ===================== TIMELINE AUTOMATION & MODAL ===================== */
+    const timeline = document.getElementById('timelineContainer');
+    let timelineRaf = null;
+    let timelinePaused = false;
+    let timelineLastTime = 0;
+    const TIMELINE_SPEED = 14; // px/giây — chậm, cinematic
+
+    function bindTimelineControls() {
+      const modal = document.getElementById('timelineModal');
+      const closeBtn = document.getElementById('timelineModalClose');
+      const yearEl = document.getElementById('modalYear');
+      const titleEl = document.getElementById('modalTitle');
+      const descEl = document.getElementById('modalDesc');
+
+      if (!timeline || !modal || !yearEl || !titleEl || !descEl || modal.dataset.bound === 'true') return;
+      modal.dataset.bound = 'true';
+
+      const openFromItem = (item) => {
+        stopTimelineAutoScroll();
+        yearEl.textContent = item.dataset.year || '';
+        titleEl.textContent = item.dataset.title || '';
+        descEl.textContent = item.dataset.desc || '';
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
+        if (closeBtn) closeBtn.focus({preventScroll:true});
+      };
+
+      timeline.addEventListener('click', (event) => {
+        const item = event.target.closest('.timeline-item');
+        if (!item || !timeline.contains(item)) return;
+        openFromItem(item);
+      });
+
+      timeline.addEventListener('keydown', (event) => {
+        if ((event.key === 'Enter' || event.key === ' ') && event.target.classList.contains('timeline-item')) {
+          event.preventDefault();
+          openFromItem(event.target);
+        }
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => closeTimelineModal());
+      }
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeTimelineModal();
+      });
+    }
+
+    function setupTimelineLoop() {
+      if (!timeline || reduceMotion || timeline.dataset.loopReady === "true") return;
+      const originalItems = Array.from(timeline.children);
+      if (!originalItems.length) return;
+
+      /* Nhân đôi article để chuyển động liên tục, không nhảy ngược về đầu. */
+      originalItems.forEach(item => {
+        const clone = item.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        timeline.appendChild(clone);
+      });
+      timeline.dataset.loopReady = "true";
+    }
+
+    function timelineFrame(now) {
+      if (!timeline) return;
+      if (!timelineLastTime) timelineLastTime = now;
+      const delta = Math.min(now - timelineLastTime, 50);
+      timelineLastTime = now;
+
+      if (!timelinePaused) {
+        timeline.scrollLeft += TIMELINE_SPEED * delta / 1000;
+        const loopWidth = timeline.scrollWidth / 2;
+        if (loopWidth > 0 && timeline.scrollLeft >= loopWidth) {
+          timeline.scrollLeft -= loopWidth;
+        }
+      }
+      timelineRaf = requestAnimationFrame(timelineFrame);
+    }
+
+    function startTimelineAutoScroll() {
+      if (!timeline || reduceMotion) return;
+      setupTimelineLoop();
+      cancelAnimationFrame(timelineRaf);
+      timelineLastTime = 0;
+      timelineRaf = requestAnimationFrame(timelineFrame);
+    }
+
+    function stopTimelineAutoScroll() {
+      timelinePaused = true;
+    }
+
+    function resumeTimelineAutoScroll() {
+      if (!document.getElementById('timelineModal')?.classList.contains('active')) {
+        timelinePaused = false;
+      }
+    }
+
+    if (timeline) {
+      startTimelineAutoScroll();
+      timeline.addEventListener('mouseenter', stopTimelineAutoScroll, {passive:true});
+      timeline.addEventListener('mouseleave', resumeTimelineAutoScroll, {passive:true});
+      timeline.addEventListener('focusin', stopTimelineAutoScroll);
+      timeline.addEventListener('focusout', resumeTimelineAutoScroll);
+      timeline.addEventListener('touchstart', stopTimelineAutoScroll, {passive:true});
+      timeline.addEventListener('touchend', () => setTimeout(resumeTimelineAutoScroll, 1200), {passive:true});
+      timeline.addEventListener('wheel', stopTimelineAutoScroll, {passive:true});
+    }
+
+    function openTimelineModal(year, title, desc) {
+      const modal = document.getElementById('timelineModal');
+      if (!modal) return;
+      stopTimelineAutoScroll();
+      document.getElementById('modalYear').textContent = year || '';
+      document.getElementById('modalTitle').textContent = title || '';
+      document.getElementById('modalDesc').textContent = desc || '';
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTimelineModal() {
+      const modal = document.getElementById('timelineModal');
+      if (!modal) return;
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      resumeTimelineAutoScroll();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeTimelineModal();
+    });
+
+    /* ===================== SHARE THE IMPACT CANVAS & FRAMES (Yêu cầu 5) ===================== */
+    let selectedFrame = 1;
+    let loadedUserImage = null;
+
+    const frameStyles = [
+      { name: "Frame 1", color: "#00A8C6", border: "#C29B38" },
+      { name: "Frame 2", color: "#C29B38", border: "#00A8C6" },
+      { name: "Frame 3", color: "#0B192C", border: "#00E5FF" },
+      { name: "Frame 4", color: "#00E5FF", border: "#0B192C" },
+      { name: "Frame 5", color: "#E6F9FC", border: "#00A8C6" },
+      { name: "Frame 6", color: "#F9F4E8", border: "#C29B38" },
+      { name: "Frame 7", color: "#64748B", border: "#FFFFFF" },
+      { name: "Frame 8", color: "#0F172A", border: "#C29B38" },
+      { name: "Frame 9", color: "#008EA3", border: "#F9F4E8" },
+      { name: "Frame 10", color: "#1E293B", border: "#00A8C6" }
+    ];
+
+    function initFrameSelector() {
+      const container = document.getElementById('frameSelector');
+      if (!container) return;
+
+      /* GAS-safe: buttons already exist in HTML as fallback; only bind events here. */
+      const buttons = Array.from(container.querySelectorAll('[data-frame]'));
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const frameNumber = Number(btn.dataset.frame);
+          if (!Number.isFinite(frameNumber) || frameNumber < 1 || frameNumber > frameStyles.length) return;
+          selectedFrame = frameNumber;
+          buttons.forEach(item => item.classList.toggle('active', item === btn));
+          renderCard();
+        });
+      });
+    }
+
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            loadedUserImage = img;
+            renderCard();
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderCard() {
+      const canvas = document.getElementById('shareCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const frame = frameStyles[selectedFrame - 1];
+
+      // Reset Canvas Background
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, w, h);
+
+      // Render User Image or Placeholder
+      if (loadedUserImage) {
+        ctx.drawImage(loadedUserImage, 40, 40, w - 80, h - 280);
+      } else {
+        ctx.fillStyle = "#E6F4F8";
+        ctx.fillRect(40, 40, w - 80, h - 280);
+        ctx.fillStyle = "#64748B";
+        ctx.font = "bold 24px 'AlmarenaVN Display', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("[ Tải ảnh của bạn lên ]", w / 2, (h - 280) / 2);
+      }
+
+      // Render Frame Border
+      ctx.lineWidth = 16;
+      ctx.strokeStyle = frame.color;
+      ctx.strokeRect(32, 32, w - 64, h - 264);
+
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = frame.border;
+      ctx.strokeRect(20, 20, w - 40, h - 40);
+
+      // Badge 10 Years
+      ctx.fillStyle = frame.color;
+      ctx.fillRect(w - 200, 40, 160, 60);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 20px 'AlmarenaVN Display', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("10 YEARS", w - 120, 78);
+
+      // Bottom Greeting Card Box
+      ctx.fillStyle = "#F4F7FA";
+      ctx.fillRect(40, h - 220, w - 80, 180);
+      ctx.strokeStyle = "#E2E8F0";
+      ctx.strokeRect(40, h - 220, w - 80, 180);
+
+      // Text Info
+      const name = document.getElementById('userName').value || "Họ và tên";
+      const wish = document.getElementById('userWish').value || "Lời chúc dành cho Gene Solutions 10 năm";
+
+      ctx.fillStyle = "#0B192C";
+      ctx.textAlign = "left";
+      ctx.font = "bold 24px 'AlmarenaVN Display', sans-serif";
+      ctx.fillText(name, 60, h - 180);
+
+      ctx.fillStyle = "#00A8C6";
+      ctx.font = "bold 14px 'AlmarenaVN Display', sans-serif";
+      ctx.fillText("GENE SOLUTIONS — 10 YEARS OF IMPACT", 60, h - 155);
+
+      ctx.fillStyle = "#64748B";
+      ctx.font = "18px 'AlmarenaVN Display', sans-serif";
+      wrapText(ctx, `"${wish}"`, 60, h - 115, w - 120, 24);
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          ctx.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
+    }
+
+    function downloadCard() {
+      const canvas = document.getElementById('shareCanvas');
+      if(!canvas) return;
+      const link = document.createElement('a');
+      link.download = 'GeneSolutions_10Years_Impact.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    /* ===================== SHARE CONTROL BINDING — GAS SAFE ===================== */
+    function bindShareControls() {
+      const nameInput = document.getElementById('userName');
+      const wishInput = document.getElementById('userWish');
+      const imageInput = document.getElementById('userImage');
+      const downloadBtn = document.querySelector('.share-actions .social-btn');
+
+      if (nameInput && nameInput.dataset.bound !== 'true') {
+        nameInput.dataset.bound = 'true';
+        nameInput.addEventListener('input', renderCard);
+      }
+      if (wishInput && wishInput.dataset.bound !== 'true') {
+        wishInput.dataset.bound = 'true';
+        wishInput.addEventListener('input', renderCard);
+      }
+      if (imageInput && imageInput.dataset.bound !== 'true') {
+        imageInput.dataset.bound = 'true';
+        imageInput.addEventListener('change', handleImageUpload);
+      }
+      if (downloadBtn && downloadBtn.dataset.bound !== 'true') {
+        downloadBtn.dataset.bound = 'true';
+        downloadBtn.addEventListener('click', downloadCard);
+      }
+
+      document.querySelectorAll('[data-share]').forEach(btn => {
+        if (btn.dataset.bound === 'true') return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+          const channel = btn.dataset.share;
+          if (channel === 'copy') copyShareMessage();
+          else shareToSocial(channel);
+        });
+      });
+    }
+
+    /* ===================== SOCIAL SHARE ===================== */
+    const SHARE_HASHTAGS = "#genesolutions #10years";
+
+    function getShareMessage() {
+      const wish = document.getElementById('userWish')?.value?.trim();
+      return `Cùng chia sẻ niềm tự hào Gene Solutions — 10 Years of Impact. ${wish || "10 năm giải mã gen, kiến tạo giá trị vì sức khỏe cộng đồng."} ${SHARE_HASHTAGS}`;
+    }
+
+    function getShareUrl() {
+      return window.location.href.split('#')[0];
+    }
+
+    function setShareStatus(message) {
+      const el = document.getElementById('shareStatus');
+      if (el) el.textContent = message;
+    }
+
+    function shareToSocial(channel) {
+      const url = getShareUrl();
+      const message = getShareMessage();
+      const u = encodeURIComponent(url);
+      const text = encodeURIComponent(message);
+      let shareUrl = '';
+
+      if (channel === 'facebook') {
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${u}&quote=${text}`;
+      } else if (channel === 'linkedin') {
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+      } else if (channel === 'zalo') {
+        shareUrl = `https://zalo.me/share?url=${u}&title=${encodeURIComponent("Gene Solutions — 10 Years of Impact")}&desc=${text}`;
+      }
+
+      if (!shareUrl) return;
+      window.open(shareUrl, '_blank', 'noopener,noreferrer,width=720,height=640');
+      setShareStatus(`Đã mở ${channel} để chia sẻ nội dung 10 Years.`);
+    }
+
+    async function copyShareMessage() {
+      const payload = `${getShareMessage()} ${getShareUrl()}`;
+      try {
+        await navigator.clipboard.writeText(payload);
+        setShareStatus("Đã copy message + link để bạn dán vào bài đăng.");
+      } catch {
+        const area = document.createElement('textarea');
+        area.value = payload;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+        setShareStatus("Đã copy message + link.");
+      }
+    }
+
+    /* ===================== BACKGROUND PIANO — START AFTER 10s ===================== */
+    const bgMusic = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+
+    /* Online piano samples. The sequence is deliberately sparse and quiet. */
+    const pianoNotes = [
+      "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c57b1f5cf.mp3"
+    ];
+    const pianoStepMs = 1350;
+    let pianoIndex = 0;
+    let pianoTimer = null;
+    let musicStarted = false;
+    let musicEnabled = true;
+
+    function updateMusicButton() {
+      if (!bgMusic || !musicToggle) return;
+      const playing = musicStarted && musicEnabled;
+      musicToggle.classList.toggle('is-playing', playing);
+      musicToggle.textContent = playing ? '❚❚' : '♪';
+      musicToggle.setAttribute('aria-label', playing ? 'Tắt nhạc nền' : 'Bật nhạc nền');
+    }
+
+    async function playPianoStep() {
+      if (!bgMusic || !musicEnabled) return;
+      bgMusic.src = pianoNotes[pianoIndex % pianoNotes.length];
+      pianoIndex++;
+      bgMusic.volume = 0.12;
+
+      try {
+        await bgMusic.play();
+        musicStarted = true;
+        updateMusicButton();
+      } catch {
+        /* Browser autoplay policy: will retry after a user gesture. */
+      }
+
+      clearTimeout(pianoTimer);
+      pianoTimer = setTimeout(playPianoStep, pianoStepMs);
+    }
+
+    function startPiano() {
+      if (musicStarted || !musicEnabled) return;
+      playPianoStep();
+    }
+
+    if (bgMusic && musicToggle) {
+      musicToggle.addEventListener('click', () => {
+        if (musicStarted && musicEnabled) {
+          musicEnabled = false;
+          bgMusic.pause();
+          clearTimeout(pianoTimer);
+        } else {
+          musicEnabled = true;
+          startPiano();
+        }
+        updateMusicButton();
+      });
+
+      /* Requested behavior: first attempt after 10 seconds. */
+      window.setTimeout(startPiano, 10000);
+
+      /* If autoplay-with-sound is blocked, retry after the first gesture. */
+      const resumeMusicAfterGesture = () => {
+        if (!musicStarted && musicEnabled && performance.now() >= 10000) {
+          startPiano();
+        }
+      };
+      ['pointerdown','keydown','touchstart'].forEach(type => {
+        window.addEventListener(type, resumeMusicAfterGesture, {passive:true});
+      });
+    }
+      /* Final defensive re-bind for environments that delay DOM inside iframe. */
+    window.setTimeout(() => {
+      try { initFrameSelector(); bindShareControls(); bindTimelineControls(); renderCard(); } catch (e) {}
+    }, 50);
+  </script>
+</body>
+</html>
