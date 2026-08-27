@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#E6F4F8"/>
+      <stop offset=".52" stop-color="#F4F7FA"/>
+      <stop offset="1" stop-color="#D2F0F5"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".22" cy=".75" r=".65">
+      <stop stop-color="#00A8C6" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#00A8C6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g opacity=".45" fill="none" stroke="#fff" stroke-width="4">
+    <path d="M760 40c170 50 250 180 230 360M1030 40C860 90 780 220 800 400M830 105h150M800 205h220M810 305h190M840 405h140"/>
+  </g>
+  <rect x="70" y="70" width="1060" height="490" rx="36" fill="#fff" fill-opacity=".56" stroke="#fff" stroke-opacity=".92" stroke-width="2"/>
+  <text x="120" y="170" fill="#00A8C6" font-family="Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="7">A DECADE OF IMPACT</text>
+  <text x="120" y="285" fill="#0B192C" font-family="Arial, sans-serif" font-size="76" font-weight="800">Gene Solutions</text>
+  <text x="120" y="375" fill="#C29B38" font-family="Arial, sans-serif" font-size="78" font-weight="800">10 Years</text>
+  <text x="120" y="445" fill="#64748B" font-family="Arial, sans-serif" font-size="28">10 năm giải mã gen — Kiến tạo giá trị — Vì sức khỏe cộng đồng</text>
+  <circle cx="1050" cy="470" r="45" fill="#00A8C6"/>
+  <path d="M1028 450c25 4 42 18 42 42M1070 450c-25 4-42 18-42 42M1037 460h24M1031 476h36M1035 492h30" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+</svg>
