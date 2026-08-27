@@ -34,7 +34,7 @@
     @font-face {
       font-family: 'AlmarenaVN Display';
       src: local('AlmarenaVN Display'), local('AlmarenaVNDisplay'),
-           url('https://github.com/phucsile/gs-10-years/blob/main/fonts/AlmarenaVN-DisplayRegular.ttf') format('woff');
+           url('https://fonts.cdnfonts.com/s/93129/AlmarenaDisplay-Bold.woff') format('woff');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
@@ -1845,72 +1845,100 @@
       }
     }
 
-    /* ===================== BACKGROUND PIANO — START AFTER 10s ===================== */
+    /* ===================== BACKGROUND MUSIC ===================== */
     const bgMusic = document.getElementById('bgMusic');
     const musicToggle = document.getElementById('musicToggle');
 
-    /* Online piano samples. The sequence is deliberately sparse and quiet. */
+    /*
+      GitHub phải dùng URL raw, không dùng URL /blob/. URL bên dưới sẽ chỉ phát
+      nếu repository/file đang public và tồn tại đúng branch + tên file.
+    */
     const pianoNotes = [
-      "https://github.com/phucsile/gs-10-years/blob/main/audio/Leaf-in-the-Wind.mp3"
+      "https://raw.githubusercontent.com/phucsile/gs-10-years/main/audio/Leaf-in-the-Wind.mp3",
+      /* Fallback demo; thay bằng CDN/audio chính thức trước khi public. */
+      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     ];
-    const pianoStepMs = 1350;
-    let pianoIndex = 0;
-    let pianoTimer = null;
     let musicStarted = false;
     let musicEnabled = true;
+    let musicSourceIndex = 0;
+    let musicAttempted = false;
 
-    function updateMusicButton() {
+    function updateMusicButton(message) {
       if (!bgMusic || !musicToggle) return;
-      const playing = musicStarted && musicEnabled;
+      const playing = musicStarted && musicEnabled && !bgMusic.paused;
       musicToggle.classList.toggle('is-playing', playing);
       musicToggle.textContent = playing ? '❚❚' : '♪';
       musicToggle.setAttribute('aria-label', playing ? 'Tắt nhạc nền' : 'Bật nhạc nền');
+      if (message) musicToggle.title = message;
     }
 
-    async function playPianoStep() {
-      if (!bgMusic || !musicEnabled) return;
-      bgMusic.src = pianoNotes[pianoIndex % pianoNotes.length];
-      pianoIndex++;
-      bgMusic.volume = 0.12;
+    function loadMusicSource(url) {
+      bgMusic.src = url;
+      bgMusic.loop = true;
+      bgMusic.preload = 'auto';
+      bgMusic.volume = 0.18;
+      bgMusic.load();
+    }
 
+    async function startPiano() {
+      if (!bgMusic || !musicEnabled || musicStarted || musicAttempted) return;
+      musicAttempted = true;
+      const source = pianoNotes[musicSourceIndex] || pianoNotes[0];
+      loadMusicSource(source);
       try {
         await bgMusic.play();
         musicStarted = true;
-        updateMusicButton();
-      } catch {
-        /* Browser autoplay policy: will retry after a user gesture. */
+        updateMusicButton('Tắt nhạc nền');
+      } catch (error) {
+        musicAttempted = false;
+        if (musicSourceIndex < pianoNotes.length - 1) {
+          musicSourceIndex += 1;
+          loadMusicSource(pianoNotes[musicSourceIndex]);
+          try {
+            await bgMusic.play();
+            musicStarted = true;
+            updateMusicButton('Đang phát nhạc dự phòng');
+            return;
+          } catch {}
+        }
+        updateMusicButton('Bấm lại để phát nhạc; trình duyệt có thể đang chặn autoplay.');
       }
-
-      clearTimeout(pianoTimer);
-      pianoTimer = setTimeout(playPianoStep, pianoStepMs);
-    }
-
-    function startPiano() {
-      if (musicStarted || !musicEnabled) return;
-      playPianoStep();
     }
 
     if (bgMusic && musicToggle) {
-      musicToggle.addEventListener('click', () => {
-        if (musicStarted && musicEnabled) {
-          musicEnabled = false;
-          bgMusic.pause();
-          clearTimeout(pianoTimer);
-        } else {
-          musicEnabled = true;
+      bgMusic.addEventListener('ended', () => {
+        if (musicEnabled) { bgMusic.currentTime = 0; bgMusic.play().catch(() => {}); }
+      });
+      bgMusic.addEventListener('error', () => {
+        if (musicSourceIndex < pianoNotes.length - 1) {
+          musicSourceIndex += 1;
+          musicAttempted = false;
           startPiano();
+        } else {
+          updateMusicButton('Không tải được file nhạc. Hãy kiểm tra URL public của file MP3.');
         }
-        updateMusicButton();
       });
 
-      /* Requested behavior: first attempt after 10 seconds. */
-      window.setTimeout(startPiano, 10000);
-
-      /* If autoplay-with-sound is blocked, retry after the first gesture. */
-      const resumeMusicAfterGesture = () => {
-        if (!musicStarted && musicEnabled && performance.now() >= 10000) {
-          startPiano();
+      musicToggle.addEventListener('click', async () => {
+        if (musicStarted && musicEnabled && !bgMusic.paused) {
+          musicEnabled = false;
+          bgMusic.pause();
+          updateMusicButton('Bật nhạc nền');
+          return;
         }
+        musicEnabled = true;
+        if (musicStarted) {
+          await bgMusic.play().catch(() => {});
+          updateMusicButton('Tắt nhạc nền');
+        } else {
+          await startPiano();
+        }
+      });
+
+      /* Thử tự phát sau 10 giây; click/touch/keydown sẽ kích hoạt ngay sau đó. */
+      window.setTimeout(startPiano, 10000);
+      const resumeMusicAfterGesture = () => {
+        if (!musicStarted && musicEnabled) startPiano();
       };
       ['pointerdown','keydown','touchstart'].forEach(type => {
         window.addEventListener(type, resumeMusicAfterGesture, {passive:true});
