@@ -3,7 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Gene Solutions — 10 Years of Impact">
+  <meta name="description" content="Gene Solutions — 10 năm giải mã gen, kiến tạo giá trị vì sức khỏe cộng đồng.">
+  <meta name="theme-color" content="#00A8C6">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="canonical" href="./">
+
+  <!-- Open Graph / Facebook / Zalo: ảnh mặc định lấy theo visual hero -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Gene Solutions">
+  <meta property="og:title" content="Gene Solutions — 10 Years of Impact">
+  <meta property="og:description" content="10 năm giải mã gen — Kiến tạo giá trị — Vì sức khỏe cộng đồng.">
+  <meta property="og:url" content="./">
+  <meta property="og:image" content="assets/og-cover.svg">
+  <meta property="og:image:alt" content="Gene Solutions — 10 Years of Impact">
+  <meta property="og:image:type" content="image/svg+xml">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gene Solutions — 10 Years of Impact">
+  <meta name="twitter:description" content="10 năm giải mã gen — Kiến tạo giá trị — Vì sức khỏe cộng đồng.">
+  <meta name="twitter:image" content="assets/og-cover.svg">
+
   <title>Gene Solutions — 10 Years of Impact</title>
 
   <!--
@@ -97,11 +115,11 @@
       box-shadow: var(--liquid-shadow) !important;
     }
 
-    .haptic-btn, .navcta, .social-btn, .cta-btn, .btn-outline, .metric, .story-card, .news-card, .tile, .milestone-card, .play {
+    .haptic-btn, .navcta, .social-btn, .cta-btn, .btn-outline, .metric, .story-card, .news-card, .tile, .milestone-card {
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
       cursor: pointer;
     }
-    .haptic-btn:active, .navcta:active, .social-btn:active, .cta-btn:active, .btn-outline:active, .play:active {
+    .haptic-btn:active, .navcta:active, .social-btn:active, .cta-btn:active, .btn-outline:active {
       transform: scale(0.94) !important;
     }
 
@@ -350,6 +368,9 @@
       display:flex;gap:18px;overflow-x:auto;padding:0 0 28px;
       scrollbar-width:none;
       scroll-snap-type:x proximity;
+      scroll-behavior:auto;
+      overscroll-behavior-inline:contain;
+      will-change:scroll-position;
       cursor: grab;
     }
     .timeline:active { cursor: grabbing; }
@@ -406,6 +427,13 @@
     }
     .timeline-modal.active .timeline-modal-content{ transform:scale(1); }
     body.modal-open{overflow:hidden;}
+    .video-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease}
+    .video-modal.active{opacity:1;visibility:visible;pointer-events:auto}
+    .video-modal-content{position:relative;width:min(920px,100%);padding:30px;border-radius:26px;background:#fff;box-shadow:0 25px 70px rgba(15,23,42,.24);transform:translateY(12px) scale(.98);transition:transform .25s ease}
+    .video-modal.active .video-modal-content{transform:none}
+    .video-modal-content h3{margin:8px 0 18px;color:var(--navy-text);font-size:clamp(28px,4vw,44px);letter-spacing:-.04em}
+    .video-frame{aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#0B192C}
+    .video-frame iframe{width:100%;height:100%;border:0;display:block}
     .timeline-modal-close{
       position:absolute; top:20px; right:20px; width:32px; height:32px;
       border-radius:50%; background:var(--paper); border:none; cursor:pointer;
@@ -420,29 +448,30 @@
     .story-layout{display:grid;grid-template-columns:1fr 1.18fr;gap:18px}
     .hcp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     .story-card{
-      min-height:405px;border:1px solid var(--line);border-radius:20px;
+      min-height:405px;border:1px solid var(--line);border-radius:28px;
       overflow:hidden;
-      background: #fff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-      position:relative
+      background:#fff;
+      box-shadow:0 10px 30px rgba(0,0,0,0.04);
+      position:relative;
+      cursor:pointer;
+      isolation:isolate;
     }
     .story-card:hover {
-      border-color: var(--cyan);
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 20px 40px rgba(0,168,198,0.1);
+      border-color:var(--cyan);
+      transform:translateY(-6px) scale(1.01);
+      box-shadow:0 20px 40px rgba(0,168,198,0.1);
     }
+    .story-card:focus-visible{outline:3px solid rgba(0,168,198,.45);outline-offset:4px}
     .doctor-media{
-      height:245px;display:grid;place-items:center;
-      background:linear-gradient(145deg, #EBF8FA, #C5E9F0);
+      height:245px;position:relative;overflow:hidden;display:flex;align-items:flex-end;
+      background:linear-gradient(145deg,#EBF8FA,#C5E9F0);
+      clip-path:ellipse(92% 86% at 50% 18%);
     }
-    .doctor-media::after{content:"[THAY ẢNH BÁC SĨ]";font-size:10px;letter-spacing:.1em;color:var(--navy-text);font-weight:700}
-    .play{
-      position:absolute;left:17px;top:202px;width:50px;height:50px;border-radius:50%;
-      display:grid;place-items:center;border:1px solid rgba(0,168,198,0.2);
-      background:#fff;color:var(--cyan);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    }
-    .play:hover { transform: scale(1.15) !important; background: var(--cyan); color:#fff; }
+    .doctor-media::before{content:"";position:absolute;inset:14px 14px 0;border-radius:50% 50% 42% 42% / 28% 28% 62% 62%;border:1px solid rgba(255,255,255,.8);pointer-events:none;z-index:2}
+    .doctor-media img{width:100%;height:100%;display:block;object-fit:cover;object-position:center top;filter:saturate(.92);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+    .story-card:hover .doctor-media img{transform:scale(1.06)}
+    .video-hint{position:absolute;right:14px;bottom:18px;padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.84);color:var(--cyan);font-size:10px;font-weight:850;backdrop-filter:blur(12px);box-shadow:0 5px 15px rgba(15,23,42,.08)}
+    .story-card.is-playing .video-hint{background:var(--cyan);color:#fff}
     .story-body{padding:18px}.badge{font-size:9px;padding:5px 8px;border:1px solid var(--cyan);border-radius:999px;color:var(--cyan);letter-spacing:.06em;font-weight:800}.story-body h3{font-size:17px;margin:13px 0 5px;color:var(--navy-text)}.story-body p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
     .leadership{
       min-height:405px;border-radius:20px;padding:40px;position:relative;overflow:hidden;
@@ -511,6 +540,12 @@
     }
     .form-control:focus{ border-color:var(--cyan); }
     textarea.form-control{ resize:vertical; min-height:80px; }
+    .image-editor{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+    .range-control{display:flex;flex-direction:column;gap:6px}
+    .range-control label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+    input[type="range"]{width:100%;accent-color:var(--cyan)}
+    .upload-note{font-size:10px;color:var(--muted);line-height:1.45}
+    .file-name{font-size:10px;color:var(--cyan);font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
     .frame-selector{ display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; scrollbar-width:thin; }
     .frame-option{
@@ -630,6 +665,8 @@
       .bento{grid-template-columns:1fr; grid-auto-rows:200px;}
       .news-grid{grid-template-columns:1fr}.news-card.featured{grid-column:auto}.featured .news-image{height:220px}
       .share-card{display:block;padding:30px}
+      .image-editor{grid-template-columns:1fr}
+      .video-modal-content{padding:22px}
       .cta-inner{display:block}.cta-btn{display:inline-block;margin-top:22px}
       .footer-grid{grid-template-columns:1fr 1fr}.copyright{display:block}.copyright span{display:block;margin-top:8px}
     }
@@ -834,6 +871,15 @@
       </div>
     </div>
 
+    <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle" aria-hidden="true">
+      <div class="video-modal-content">
+        <button class="timeline-modal-close" id="videoModalClose" type="button" aria-label="Đóng video">✕</button>
+        <div class="kicker">Expert perspective</div>
+        <h3 id="videoModalTitle">Góc nhìn chuyên gia</h3>
+        <div class="video-frame"><iframe id="expertVideo" title="Video góc nhìn chuyên gia" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+      </div>
+    </div>
+
     <!-- ============================== STORIES ============================== -->
     <section class="stories" id="stories">
       <div class="container">
@@ -842,18 +888,18 @@
 
         <div class="story-layout" data-reveal>
           <div class="hcp-grid">
-            <article class="story-card haptic-btn">
-              <div class="doctor-media"></div><div class="play" aria-label="Play video">▶</div>
+            <article class="story-card haptic-btn" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ" tabindex="0" role="button" aria-label="Xem video góc nhìn chuyên gia sản phụ khoa">
+              <div class="doctor-media"><img src="assets/expert-obgyn.jpg" alt="Ảnh minh họa chuyên gia sản phụ khoa" loading="lazy"><span class="video-hint">Click để xem video</span></div>
               <div class="story-body"><span class="badge">SẢN PHỤ KHOA</span><h3>TS.BS. [THAY TÊN]</h3><p>“[THAY TRÍCH DẪN ĐƯỢC DUYỆT]”</p></div>
             </article>
 
-            <article class="story-card haptic-btn">
-              <div class="doctor-media"></div><div class="play" aria-label="Play video">▶</div>
+            <article class="story-card haptic-btn" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ" tabindex="0" role="button" aria-label="Xem video góc nhìn chuyên gia oncology">
+              <div class="doctor-media"><img src="assets/expert-oncology.jpg" alt="Ảnh minh họa chuyên gia ung bướu" loading="lazy"><span class="video-hint">Click để xem video</span></div>
               <div class="story-body"><span class="badge">ONCOLOGY</span><h3>PGS.TS. [THAY TÊN]</h3><p>“[THAY TRÍCH DẪN ĐƯỢC DUYỆT]”</p></div>
             </article>
 
-            <article class="story-card haptic-btn">
-              <div class="doctor-media"></div><div class="play" aria-label="Play video">▶</div>
+            <article class="story-card haptic-btn" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ" tabindex="0" role="button" aria-label="Xem video góc nhìn chuyên gia nhi khoa">
+              <div class="doctor-media"><img src="assets/expert-pediatrics.jpg" alt="Ảnh minh họa chuyên gia nhi khoa" loading="lazy"><span class="video-hint">Click để xem video</span></div>
               <div class="story-body"><span class="badge">NHI KHOA</span><h3>BS.CKII. [THAY TÊN]</h3><p>“[THAY TRÍCH DẪN ĐƯỢC DUYỆT]”</p></div>
             </article>
           </div>
@@ -961,7 +1007,24 @@
 
               <div class="form-group">
                 <label for="userImage">Tải lên hình ảnh của bạn</label>
-                <input type="file" id="userImage" class="form-control" accept="image/*">
+                <input type="file" id="userImage" class="form-control" accept="image/*" aria-describedby="uploadNote">
+                <div id="fileName" class="file-name">Chưa chọn ảnh</div>
+                <div id="uploadNote" class="upload-note">Ảnh sẽ được giữ đúng tỷ lệ, tự tối ưu kích thước và cắt vừa khung. Bạn có thể tinh chỉnh bên dưới.</div>
+              </div>
+
+              <div class="image-editor" id="imageEditor" hidden>
+                <div class="range-control">
+                  <label for="imageScale">Kích thước ảnh <output id="imageScaleValue">100%</output></label>
+                  <input type="range" id="imageScale" min="100" max="180" value="100" step="1">
+                </div>
+                <div class="range-control">
+                  <label for="imagePositionX">Căn ngang <output id="imagePositionXValue">0</output></label>
+                  <input type="range" id="imagePositionX" min="-100" max="100" value="0" step="1">
+                </div>
+                <div class="range-control">
+                  <label for="imagePositionY">Căn dọc <output id="imagePositionYValue">0</output></label>
+                  <input type="range" id="imagePositionY" min="-100" max="100" value="0" step="1">
+                </div>
               </div>
 
               <div class="form-group">
@@ -981,7 +1044,7 @@
               </div>
 
               <div class="share-actions">
-                <button class="social-btn haptic-btn">Tải thiệp & Frame về máy</button>
+                <button type="button" class="social-btn haptic-btn" data-download-card>Tải thiệp & Frame về máy</button>
               </div>
 
               <div class="share-socials" aria-label="Chia sẻ kỷ niệm 10 năm">
@@ -1063,7 +1126,10 @@
       try { document.body.classList.add('is-loaded'); } catch (e) {}
       try { initFrameSelector(); } catch (e) { console.warn('Frame selector init:', e); }
       try { bindShareControls(); } catch (e) { console.warn('Share controls init:', e); }
+      try { bindImageEditorControls(); } catch (e) { console.warn('Image editor init:', e); }
+      try { bindExpertVideoControls(); } catch (e) { console.warn('Expert video init:', e); }
       try { bindTimelineControls(); } catch (e) { console.warn('Timeline init:', e); }
+      try { ensureAbsoluteSocialMeta(); } catch (e) { console.warn('Social metadata init:', e); }
       try { renderCard(); } catch (e) { console.warn('Canvas render:', e); }
     }
 
@@ -1297,12 +1363,14 @@
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeTimelineModal();
+        if (e.key === 'Escape') { closeTimelineModal(); closeExpertVideoModal(); }
     });
 
     /* ===================== SHARE THE IMPACT CANVAS & FRAMES (Yêu cầu 5) ===================== */
     let selectedFrame = 1;
     let loadedUserImage = null;
+    const imageTransform = { scale:100, x:0, y:0 };
+    const MAX_UPLOAD_EDGE = 2400;
 
     const frameStyles = [
       { name: "Frame 1", color: "#00A8C6", border: "#C29B38" },
@@ -1334,20 +1402,85 @@
       });
     }
 
-    function handleImageUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
+    function resizeUploadedImage(file) {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onerror = () => reject(new Error('Không thể đọc ảnh.'));
+        reader.onload = () => {
           const img = new Image();
-          img.onload = function() {
-            loadedUserImage = img;
-            renderCard();
+          img.onerror = () => reject(new Error('Định dạng ảnh không hợp lệ.'));
+          img.onload = () => {
+            const longestEdge = Math.max(img.naturalWidth, img.naturalHeight);
+            if (longestEdge <= MAX_UPLOAD_EDGE) return resolve(img);
+            const ratio = MAX_UPLOAD_EDGE / longestEdge;
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.naturalWidth * ratio);
+            canvas.height = Math.round(img.naturalHeight * ratio);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            const optimized = new Image();
+            optimized.onload = () => resolve(optimized);
+            optimized.onerror = () => reject(new Error('Không thể tối ưu ảnh.'));
+            optimized.src = canvas.toDataURL('image/jpeg', .92);
           };
-          img.src = event.target.result;
+          img.src = reader.result;
         };
         reader.readAsDataURL(file);
+      });
+    }
+
+    function updateImageEditorLabels() {
+      const scale = document.getElementById('imageScale');
+      const x = document.getElementById('imagePositionX');
+      const y = document.getElementById('imagePositionY');
+      const scaleValue = document.getElementById('imageScaleValue');
+      const xValue = document.getElementById('imagePositionXValue');
+      const yValue = document.getElementById('imagePositionYValue');
+      if (scaleValue) scaleValue.textContent = `${imageTransform.scale}%`;
+      if (xValue) xValue.textContent = imageTransform.x;
+      if (yValue) yValue.textContent = imageTransform.y;
+      if (scale && Number(scale.value) !== imageTransform.scale) scale.value = imageTransform.scale;
+      if (x && Number(x.value) !== imageTransform.x) x.value = imageTransform.x;
+      if (y && Number(y.value) !== imageTransform.y) y.value = imageTransform.y;
+    }
+
+    async function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      const fileName = document.getElementById('fileName');
+      const editor = document.getElementById('imageEditor');
+      try {
+        loadedUserImage = await resizeUploadedImage(file);
+        imageTransform.scale = 100;
+        imageTransform.x = 0;
+        imageTransform.y = 0;
+        if (fileName) fileName.textContent = `${file.name} — đã tối ưu tỷ lệ`;
+        if (editor) editor.hidden = false;
+        updateImageEditorLabels();
+        renderCard();
+      } catch (error) {
+        loadedUserImage = null;
+        if (fileName) fileName.textContent = error.message;
+        if (editor) editor.hidden = true;
+        renderCard();
       }
+    }
+
+    function drawCoverImage(ctx, image, x, y, width, height) {
+      const sourceWidth = image.naturalWidth || image.width;
+      const sourceHeight = image.naturalHeight || image.height;
+      const coverScale = Math.max(width / sourceWidth, height / sourceHeight) * (imageTransform.scale / 100);
+      const drawWidth = sourceWidth * coverScale;
+      const drawHeight = sourceHeight * coverScale;
+      const availableX = Math.max(0, drawWidth - width) / 2;
+      const availableY = Math.max(0, drawHeight - height) / 2;
+      const drawX = x + (width - drawWidth) / 2 + availableX * (imageTransform.x / 100);
+      const drawY = y + (height - drawHeight) / 2 + availableY * (imageTransform.y / 100);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, width, height);
+      ctx.clip();
+      ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+      ctx.restore();
     }
 
     function renderCard() {
@@ -1362,9 +1495,10 @@
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, w, h);
 
-      // Render User Image or Placeholder
+      // Render User Image or Placeholder — luôn giữ tỷ lệ, không kéo méo.
+      const imageBox = { x:40, y:40, width:w - 80, height:h - 280 };
       if (loadedUserImage) {
-        ctx.drawImage(loadedUserImage, 40, 40, w - 80, h - 280);
+        drawCoverImage(ctx, loadedUserImage, imageBox.x, imageBox.y, imageBox.width, imageBox.height);
       } else {
         ctx.fillStyle = "#E6F4F8";
         ctx.fillRect(40, 40, w - 80, h - 280);
@@ -1438,8 +1572,104 @@
       if(!canvas) return;
       const link = document.createElement('a');
       link.download = 'GeneSolutions_10Years_Impact.png';
-      link.href = canvas.toDataURL();
+      link.href = canvas.toDataURL('image/png');
       link.click();
+    }
+
+    function bindImageEditorControls() {
+      const editor = document.getElementById('imageEditor');
+      if (!editor || editor.dataset.bound === 'true') return;
+      editor.dataset.bound = 'true';
+      const controls = [
+        ['imageScale', 'scale'],
+        ['imagePositionX', 'x'],
+        ['imagePositionY', 'y']
+      ];
+      controls.forEach(([id, key]) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        input.addEventListener('input', () => {
+          imageTransform[key] = Number(input.value);
+          updateImageEditorLabels();
+          renderCard();
+        });
+      });
+      updateImageEditorLabels();
+    }
+
+    function getCardBlob() {
+      return new Promise(resolve => {
+        const canvas = document.getElementById('shareCanvas');
+        canvas?.toBlob(blob => resolve(blob), 'image/png');
+      });
+    }
+
+    async function shareCardWithNativeSheet(message, url) {
+      if (!loadedUserImage || !navigator.share || !navigator.canShare) return null;
+      const blob = await getCardBlob();
+      if (!blob) return null;
+      const file = new File([blob], 'GeneSolutions_10Years_Impact.png', {type:'image/png'});
+      const shareData = {title:'Gene Solutions — 10 Years of Impact', text:message, url, files:[file]};
+      if (!navigator.canShare(shareData)) return null;
+      try {
+        await navigator.share(shareData);
+        setShareStatus('Đã mở bảng chia sẻ cùng ảnh thiệp, caption và hashtag.');
+        return true;
+      } catch (error) {
+        if (error?.name === 'AbortError') setShareStatus('Bạn đã đóng bảng chia sẻ.');
+        return false;
+      }
+    }
+
+    function bindExpertVideoControls() {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('expertVideo');
+      const closeBtn = document.getElementById('videoModalClose');
+      if (!modal || !iframe || modal.dataset.bound === 'true') return;
+      modal.dataset.bound = 'true';
+      document.querySelectorAll('.story-card[data-video]').forEach(card => {
+        const open = () => {
+          const source = card.dataset.video || '';
+          iframe.src = source + (source.includes('?') ? '&' : '?') + 'autoplay=1';
+          const title = card.querySelector('h3')?.textContent?.trim() || 'Góc nhìn chuyên gia';
+          const titleEl = document.getElementById('videoModalTitle');
+          if (titleEl) titleEl.textContent = title;
+          modal.classList.add('active');
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('modal-open');
+          card.classList.add('is-playing');
+          closeBtn?.focus({preventScroll:true});
+        };
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); }
+        });
+      });
+      closeBtn?.addEventListener('click', closeExpertVideoModal);
+      modal.addEventListener('click', event => { if (event.target === modal) closeExpertVideoModal(); });
+    }
+
+    function closeExpertVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('expertVideo');
+      if (!modal) return;
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      if (iframe) iframe.src = '';
+      document.querySelectorAll('.story-card.is-playing').forEach(card => card.classList.remove('is-playing'));
+      if (!document.getElementById('timelineModal')?.classList.contains('active')) {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function ensureAbsoluteSocialMeta() {
+      const baseUrl = window.location.href.split('#')[0];
+      const imageUrl = new URL('assets/og-cover.svg', window.location.href).href;
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', baseUrl);
+      document.querySelector('meta[property="og:url"]')?.setAttribute('content', baseUrl);
+      document.querySelector('meta[property="og:image"]')?.setAttribute('content', imageUrl);
+      document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', imageUrl);
     }
 
     /* ===================== SHARE CONTROL BINDING — GAS SAFE ===================== */
@@ -1447,7 +1677,7 @@
       const nameInput = document.getElementById('userName');
       const wishInput = document.getElementById('userWish');
       const imageInput = document.getElementById('userImage');
-      const downloadBtn = document.querySelector('.share-actions .social-btn');
+      const downloadBtn = document.querySelector('[data-download-card]');
 
       if (nameInput && nameInput.dataset.bound !== 'true') {
         nameInput.dataset.bound = 'true';
@@ -1478,11 +1708,14 @@
     }
 
     /* ===================== SOCIAL SHARE ===================== */
-    const SHARE_HASHTAGS = "#genesolutions #10years";
+    const SHARE_CAPTION = 'Cùng chia sẻ niềm tự hào Gene Solutions — 10 Years of Impact.';
+    const SHARE_HASHTAGS = '#GeneSolutions #10YearsOfImpact #GiaiMaGen #SucKhoeCongDong';
 
     function getShareMessage() {
+      const name = document.getElementById('userName')?.value?.trim();
       const wish = document.getElementById('userWish')?.value?.trim();
-      return `Cùng chia sẻ niềm tự hào Gene Solutions — 10 Years of Impact. ${wish || "10 năm giải mã gen, kiến tạo giá trị vì sức khỏe cộng đồng."} ${SHARE_HASHTAGS}`;
+      const signature = name ? `Lời chúc từ ${name}:` : 'Lời chúc của tôi:';
+      return `${SHARE_CAPTION}\n\n${signature} ${wish || '10 năm giải mã gen, kiến tạo giá trị vì sức khỏe cộng đồng.'}\n\n${SHARE_HASHTAGS}`;
     }
 
     function getShareUrl() {
@@ -1494,24 +1727,30 @@
       if (el) el.textContent = message;
     }
 
-    function shareToSocial(channel) {
+    async function shareToSocial(channel) {
       const url = getShareUrl();
       const message = getShareMessage();
+      if (loadedUserImage) {
+        const nativeResult = await shareCardWithNativeSheet(message, url);
+        if (nativeResult !== null) return;
+      }
+
       const u = encodeURIComponent(url);
       const text = encodeURIComponent(message);
       let shareUrl = '';
-
       if (channel === 'facebook') {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${u}&quote=${text}`;
       } else if (channel === 'linkedin') {
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
       } else if (channel === 'zalo') {
-        shareUrl = `https://zalo.me/share?url=${u}&title=${encodeURIComponent("Gene Solutions — 10 Years of Impact")}&desc=${text}`;
+        shareUrl = `https://zalo.me/share?url=${u}&title=${encodeURIComponent(SHARE_CAPTION)}&desc=${text}`;
       }
 
       if (!shareUrl) return;
+      if (loadedUserImage) downloadCard();
       window.open(shareUrl, '_blank', 'noopener,noreferrer,width=720,height=640');
-      setShareStatus(`Đã mở ${channel} để chia sẻ nội dung 10 Years.`);
+      const imageNote = loadedUserImage ? ' Ảnh thiệp đã được tải xuống để đính kèm.' : ' Ảnh mặc định sẽ lấy từ hero thumbnail.';
+      setShareStatus(`Đã mở ${channel} với caption + hashtag.${imageNote}`);
     }
 
     async function copyShareMessage() {
@@ -1605,7 +1844,7 @@
     }
       /* Final defensive re-bind for environments that delay DOM inside iframe. */
     window.setTimeout(() => {
-      try { initFrameSelector(); bindShareControls(); bindTimelineControls(); renderCard(); } catch (e) {}
+      try { initFrameSelector(); bindShareControls(); bindImageEditorControls(); bindExpertVideoControls(); bindTimelineControls(); ensureAbsoluteSocialMeta(); renderCard(); } catch (e) {}
     }, 50);
   </script>
 </body>
