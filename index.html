@@ -34,7 +34,7 @@
     @font-face {
       font-family: 'AlmarenaVN Display';
       src: local('AlmarenaVN Display'), local('AlmarenaVNDisplay'),
-           url('https://fonts.cdnfonts.com/s/93129/AlmarenaDisplay-Bold.woff') format('woff');
+           url('https://github.com/phucsile/gs-10-years/blob/main/fonts/AlmarenaVN-DisplayRegular.ttf') format('woff');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
@@ -367,7 +367,7 @@
     .timeline{
       display:flex;gap:18px;overflow-x:auto;padding:0 0 28px;
       scrollbar-width:none;
-      scroll-snap-type:x proximity;
+      scroll-snap-type:none;
       scroll-behavior:auto;
       overscroll-behavior-inline:contain;
       will-change:scroll-position;
@@ -592,10 +592,14 @@
     }
     .frame-preview{
       width:100%; aspect-ratio:1/1; border-radius:20px; border:2px dashed var(--cyan);
-      position:relative; overflow:hidden; background: #fff;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      position:relative; overflow:hidden; background:#fff;
+      box-shadow:0 10px 25px rgba(0,0,0,0.05);
     }
-    canvas#shareCanvas{ width:100%; height:100%; display:block; object-fit:contain; }
+    canvas#shareCanvas{width:100%;height:100%;display:block;object-fit:contain}
+    canvas#shareCanvas.image-ready{cursor:grab;touch-action:none;user-select:none}
+    canvas#shareCanvas.image-ready.is-dragging{cursor:grabbing}
+    .image-editor[hidden]{display:none!important}
+    .image-editor input:disabled{opacity:.45;cursor:not-allowed}
 
     /* ---------------- CTA LIGHT ---------------- */
     .cta{
@@ -1015,15 +1019,15 @@
               <div class="image-editor" id="imageEditor" hidden>
                 <div class="range-control">
                   <label for="imageScale">Kích thước ảnh <output id="imageScaleValue">100%</output></label>
-                  <input type="range" id="imageScale" min="100" max="180" value="100" step="1">
+                  <input type="range" id="imageScale" min="100" max="180" value="100" step="1" disabled>
                 </div>
                 <div class="range-control">
                   <label for="imagePositionX">Căn ngang <output id="imagePositionXValue">0</output></label>
-                  <input type="range" id="imagePositionX" min="-100" max="100" value="0" step="1">
+                  <input type="range" id="imagePositionX" min="-100" max="100" value="0" step="1" disabled>
                 </div>
                 <div class="range-control">
                   <label for="imagePositionY">Căn dọc <output id="imagePositionYValue">0</output></label>
-                  <input type="range" id="imagePositionY" min="-100" max="100" value="0" step="1">
+                  <input type="range" id="imagePositionY" min="-100" max="100" value="0" step="1" disabled>
                 </div>
               </div>
 
@@ -1127,6 +1131,7 @@
       try { initFrameSelector(); } catch (e) { console.warn('Frame selector init:', e); }
       try { bindShareControls(); } catch (e) { console.warn('Share controls init:', e); }
       try { bindImageEditorControls(); } catch (e) { console.warn('Image editor init:', e); }
+      try { bindCanvasPanControls(); } catch (e) { console.warn('Canvas pan init:', e); }
       try { bindExpertVideoControls(); } catch (e) { console.warn('Expert video init:', e); }
       try { bindTimelineControls(); } catch (e) { console.warn('Timeline init:', e); }
       try { ensureAbsoluteSocialMeta(); } catch (e) { console.warn('Social metadata init:', e); }
@@ -1180,21 +1185,30 @@
     }
 
     function runCounter(el){
+      if (!el || el.dataset.counted === 'true' || el.dataset.counting === 'true') return;
       const target = Number(el.dataset.count);
-      if(reduceMotion){
-        el.textContent = renderNumber(target,el);
-        return;
-      }
+      if (!Number.isFinite(target)) return;
+      el.dataset.counting = 'true';
 
-      const start = performance.now();
-      const duration = 2000;
+      const finish = () => {
+        el.textContent = renderNumber(target, el);
+        el.dataset.counted = 'true';
+        delete el.dataset.counting;
+      };
+      if (reduceMotion) { finish(); return; }
 
-      function tick(now){
-        const p = Math.min((now-start)/duration,1);
-        const eased = 1 - Math.pow(1 - p, 4);
-        el.textContent = renderNumber(target * eased, el);
-        if(p < 1) requestAnimationFrame(tick);
-      }
+      const startValue = 0;
+      const startTime = performance.now();
+      const duration = 1600;
+      const tick = now => {
+        const progress = Math.min(1, (now - startTime) / duration);
+        const eased = 1 - Math.pow(1 - progress, 4);
+        const current = startValue + (target - startValue) * eased;
+        el.textContent = renderNumber(progress >= 1 ? target : current, el);
+        if (progress < 1) requestAnimationFrame(tick);
+        else finish();
+      };
+      el.textContent = renderNumber(startValue, el);
       requestAnimationFrame(tick);
     }
 
@@ -1234,7 +1248,8 @@
     let timelineRaf = null;
     let timelinePaused = false;
     let timelineLastTime = 0;
-    const TIMELINE_SPEED = 14; // px/giây — chậm, cinematic
+    let timelineScrollPosition = 0;
+    const TIMELINE_SPEED = 18; // px/giây — đủ rõ trên cả desktop và mobile
 
     function bindTimelineControls() {
       const modal = document.getElementById('timelineModal');
@@ -1281,7 +1296,7 @@
     }
 
     function setupTimelineLoop() {
-      if (!timeline || reduceMotion || timeline.dataset.loopReady === "true") return;
+      if (!timeline || timeline.dataset.loopReady === "true") return;
       const originalItems = Array.from(timeline.children);
       if (!originalItems.length) return;
 
@@ -1300,19 +1315,22 @@
       const delta = Math.min(now - timelineLastTime, 50);
       timelineLastTime = now;
 
-      if (!timelinePaused) {
-        timeline.scrollLeft += TIMELINE_SPEED * delta / 1000;
-        const loopWidth = timeline.scrollWidth / 2;
-        if (loopWidth > 0 && timeline.scrollLeft >= loopWidth) {
-          timeline.scrollLeft -= loopWidth;
-        }
+      if (!timelinePaused && !document.hidden) {
+        const loopWidth = Math.max(1, timeline.scrollWidth / 2);
+        timelineScrollPosition += TIMELINE_SPEED * delta / 1000;
+        if (timelineScrollPosition >= loopWidth) timelineScrollPosition -= loopWidth;
+        timeline.scrollLeft = Math.round(timelineScrollPosition);
       }
       timelineRaf = requestAnimationFrame(timelineFrame);
     }
 
+    let timelineResumeTimer = null;
+
     function startTimelineAutoScroll() {
-      if (!timeline || reduceMotion) return;
+      if (!timeline) return;
       setupTimelineLoop();
+      timelinePaused = false;
+      timelineScrollPosition = timeline.scrollLeft;
       cancelAnimationFrame(timelineRaf);
       timelineLastTime = 0;
       timelineRaf = requestAnimationFrame(timelineFrame);
@@ -1320,11 +1338,25 @@
 
     function stopTimelineAutoScroll() {
       timelinePaused = true;
+      clearTimeout(timelineResumeTimer);
+    }
+
+    function scheduleTimelineResume(delay = 1200) {
+      clearTimeout(timelineResumeTimer);
+      timelineResumeTimer = setTimeout(() => {
+        if (!document.getElementById('timelineModal')?.classList.contains('active')) {
+          timelinePaused = false;
+          timelineScrollPosition = timeline.scrollLeft;
+          timelineLastTime = 0;
+        }
+      }, delay);
     }
 
     function resumeTimelineAutoScroll() {
       if (!document.getElementById('timelineModal')?.classList.contains('active')) {
         timelinePaused = false;
+        timelineScrollPosition = timeline.scrollLeft;
+        timelineLastTime = 0;
       }
     }
 
@@ -1333,10 +1365,14 @@
       timeline.addEventListener('mouseenter', stopTimelineAutoScroll, {passive:true});
       timeline.addEventListener('mouseleave', resumeTimelineAutoScroll, {passive:true});
       timeline.addEventListener('focusin', stopTimelineAutoScroll);
-      timeline.addEventListener('focusout', resumeTimelineAutoScroll);
+      timeline.addEventListener('focusout', () => scheduleTimelineResume());
       timeline.addEventListener('touchstart', stopTimelineAutoScroll, {passive:true});
-      timeline.addEventListener('touchend', () => setTimeout(resumeTimelineAutoScroll, 1200), {passive:true});
-      timeline.addEventListener('wheel', stopTimelineAutoScroll, {passive:true});
+      timeline.addEventListener('touchend', () => scheduleTimelineResume(1400), {passive:true});
+      timeline.addEventListener('wheel', () => { stopTimelineAutoScroll(); scheduleTimelineResume(1400); }, {passive:true});
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopTimelineAutoScroll();
+        else resumeTimelineAutoScroll();
+      });
     }
 
     function openTimelineModal(year, title, desc) {
@@ -1435,12 +1471,14 @@
       const scaleValue = document.getElementById('imageScaleValue');
       const xValue = document.getElementById('imagePositionXValue');
       const yValue = document.getElementById('imagePositionYValue');
+      const imageReady = Boolean(loadedUserImage);
       if (scaleValue) scaleValue.textContent = `${imageTransform.scale}%`;
       if (xValue) xValue.textContent = imageTransform.x;
       if (yValue) yValue.textContent = imageTransform.y;
       if (scale && Number(scale.value) !== imageTransform.scale) scale.value = imageTransform.scale;
       if (x && Number(x.value) !== imageTransform.x) x.value = imageTransform.x;
       if (y && Number(y.value) !== imageTransform.y) y.value = imageTransform.y;
+      [scale, x, y].forEach(control => { if (control) control.disabled = !imageReady; });
     }
 
     async function handleImageUpload(e) {
@@ -1455,12 +1493,15 @@
         imageTransform.y = 0;
         if (fileName) fileName.textContent = `${file.name} — đã tối ưu tỷ lệ`;
         if (editor) editor.hidden = false;
+        document.getElementById('shareCanvas')?.classList.add('image-ready');
         updateImageEditorLabels();
         renderCard();
       } catch (error) {
         loadedUserImage = null;
         if (fileName) fileName.textContent = error.message;
         if (editor) editor.hidden = true;
+        document.getElementById('shareCanvas')?.classList.remove('image-ready', 'is-dragging');
+        updateImageEditorLabels();
         renderCard();
       }
     }
@@ -1595,6 +1636,39 @@
         });
       });
       updateImageEditorLabels();
+    }
+
+    function bindCanvasPanControls() {
+      const canvas = document.getElementById('shareCanvas');
+      if (!canvas || canvas.dataset.panBound === 'true') return;
+      canvas.dataset.panBound = 'true';
+      let dragStart = null;
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      canvas.addEventListener('pointerdown', event => {
+        if (!loadedUserImage) return;
+        dragStart = { clientX:event.clientX, clientY:event.clientY, x:imageTransform.x, y:imageTransform.y };
+        canvas.classList.add('is-dragging');
+        canvas.setPointerCapture?.(event.pointerId);
+      });
+      canvas.addEventListener('pointermove', event => {
+        if (!dragStart || !loadedUserImage) return;
+        const rect = canvas.getBoundingClientRect();
+        const dx = ((event.clientX - dragStart.clientX) / Math.max(1, rect.width)) * 200;
+        const dy = ((event.clientY - dragStart.clientY) / Math.max(1, rect.height)) * 200;
+        imageTransform.x = Math.round(clamp(dragStart.x + dx, -100, 100));
+        imageTransform.y = Math.round(clamp(dragStart.y + dy, -100, 100));
+        updateImageEditorLabels();
+        renderCard();
+      });
+      const endDrag = event => {
+        if (!dragStart) return;
+        dragStart = null;
+        canvas.classList.remove('is-dragging');
+        try { canvas.releasePointerCapture?.(event.pointerId); } catch {}
+      };
+      canvas.addEventListener('pointerup', endDrag);
+      canvas.addEventListener('pointercancel', endDrag);
+      canvas.addEventListener('pointerleave', event => { if (event.buttons === 0) endDrag(event); });
     }
 
     function getCardBlob() {
@@ -1777,7 +1851,7 @@
 
     /* Online piano samples. The sequence is deliberately sparse and quiet. */
     const pianoNotes = [
-      "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c57b1f5cf.mp3"
+      "https://github.com/phucsile/gs-10-years/blob/main/assets/alex-morgan-calm-piano-541028.mp3"
     ];
     const pianoStepMs = 1350;
     let pianoIndex = 0;
@@ -1844,7 +1918,7 @@
     }
       /* Final defensive re-bind for environments that delay DOM inside iframe. */
     window.setTimeout(() => {
-      try { initFrameSelector(); bindShareControls(); bindImageEditorControls(); bindExpertVideoControls(); bindTimelineControls(); ensureAbsoluteSocialMeta(); renderCard(); } catch (e) {}
+      try { initFrameSelector(); bindShareControls(); bindImageEditorControls(); bindCanvasPanControls(); bindExpertVideoControls(); bindTimelineControls(); ensureAbsoluteSocialMeta(); renderCard(); } catch (e) {}
     }, 50);
   </script>
 </body>
